@@ -1,0 +1,117 @@
+body {font-family: Arial;}
+
+
+@keyframes drop_down {
+	from {opacity:0; line-height: 0%;}
+	to {opacity:1; line-height: 125%}
+}
+
+@keyframes joke_anim {
+	0% {font-size: 0px; visibility: block;}
+	95% {font-size: 30px;}
+	100% {opacity: 0; height :100%;}
+}
+
+
+.tab {
+	overflow: hidden;
+	border: 1px solid #ccc;
+	background-color: #f1f1f1;
+}
+
+.tab button {
+	display:table;
+	width: 50%;
+	table-layout: fixed;
+	float: left;
+	background-color:inherit;
+	border: none;
+	outline: none;
+	cursor: pointer;
+	padding: 14px 16px;
+	transition: .5s;
+	font-size: 17px;
+}
+
+.tab button:hover {
+	background-color: #ddd;
+	transition: .5s;
+}
+
+.tab button.active {
+	background-color: #ccc;
+}
+
+.tabcontent {
+	position: relative;
+	transition: opacity 1s ease-in-out;
+	padding: 6px 12px;
+	border: 1px solid #ccc;
+	border-top: none;
+	overflow-y: auto;
+	min-height: 80vh;
+}
+
+.clickybutton {
+    
+    border: none;
+    outline: none;
+	cursor: pointer;
+	background-color: #eee;
+	transition: .5s;
+    padding: 14px 16px;
+}
+
+.clickybutton:hover {
+    background-color: #ddd;
+	transition: .5s;
+}
+
+.clickybutton.active {
+    background-color: #ccc;
+}
+
+.dropdowncontent {
+	animation-name: drop_down;
+	animation-duration: .5s;
+	height: 200px;
+	width: 400px;
+	overflow: scroll;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    transition: .5s;
+   
+}
+
+.genretable {
+	table-layout: fixed;
+}
+
+#submitButton{
+	z-index: 1;
+}
+
+.genrerows button {
+	animation-name: drop_down;
+	animation-duration: .5s;
+	width: 30%;
+	padding: 20px 20px;
+	margin: 3px;
+}
+
+.mainmenues {
+	display: table;
+}
+
+.resultDisplay {
+	margin: 30px;
+}
+
+.imgContainer {
+	display:block;
+	width: 99%;
+	margin:auto;
+}
