@@ -228,8 +228,7 @@ var DisplayMedia = function (_React$Component) {
           "p",
           null,
           " No results found! "
-        ),
-        ";"
+        )
       );
     }
   }]);
