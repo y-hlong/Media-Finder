@@ -243,7 +243,7 @@ class DisplayMedia extends React.Component{
                     </div>
                   </ul>
                 </li>)}
-         </div>:(<p> No results found! </p>)};          
+         </div>:(<p> No results found! </p>)}         
         
       </div>
         
