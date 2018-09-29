@@ -1,4 +1,3 @@
-import { CSSTransition } from 'react-transition-group';
 class DisplayMedia extends React.Component{
   constructor(props){
     super(props);
@@ -12,7 +11,7 @@ class DisplayMedia extends React.Component{
             <div className ="imgContainer">
                 {this.props.displayList.map((item, index) =>
                     
-                      <img classNames="fade" className = "titleImg" key={item.title + "-" + "outterList"} src={item.imgUrl}></img>
+                      <img className = "titleImg" key={item.title + "-" + "outterList"} src={item.imgUrl}></img>
                     
                 )}
          </div> : <p> No results found! </p>}         

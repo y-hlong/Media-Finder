@@ -6,8 +6,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-import { CSSTransition } from 'react-transition-group';
-
 var DisplayMedia = function (_React$Component) {
   _inherits(DisplayMedia, _React$Component);
 
@@ -27,7 +25,7 @@ var DisplayMedia = function (_React$Component) {
           "div",
           { className: "imgContainer" },
           this.props.displayList.map(function (item, index) {
-            return React.createElement("img", { classNames: "fade", className: "titleImg", key: item.title + "-" + "outterList", src: item.imgUrl });
+            return React.createElement("img", { className: "titleImg", key: item.title + "-" + "outterList", src: item.imgUrl });
           })
         ) : React.createElement(
           "p",

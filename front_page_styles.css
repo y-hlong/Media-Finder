@@ -7,7 +7,7 @@ body {font-family: Arial;}
 }
 
 @keyframes crawl_out {
-	from {line-height: 0%;}
+	from {line-height: 0%; width: 100%;}
 	to {line-height: 100%;}
 }
 
