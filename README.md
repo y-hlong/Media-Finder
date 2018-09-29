@@ -1,1 +1,1 @@
-# Random-Anime-Finder
+# Random-Media-Finder
