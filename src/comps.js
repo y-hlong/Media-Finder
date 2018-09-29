@@ -8,21 +8,19 @@ class DisplayMedia extends React.Component{
     return (
       <div>
           {!this.props.noResult ? 
-            <div>
+            <div className ="imgContainer">
                 {this.props.displayList.map((item, index) =>
-                <div key={item.title + "-" + "outterList"}> {item.title}
-                    <div className="imgContainer">
-                      <img src={item.imgUrl}></img>
-                      <div key = {item.title + "-" + "innerList"}> {item.description}
-                      </div>
-                    </div>
-                </div>)}
+                    
+                      <img className = "titleImg" key={item.title + "-" + "outterList"} src={item.imgUrl}></img>
+                    
+                )}
          </div> : <p> No results found! </p>}         
       </div>);
   }
 }
 
-
+/*<div key = {item.title + "-" + "innerList"}> {item.description}
+                      </div>*/
 
 
 
@@ -261,6 +259,7 @@ class GenreSelect extends React.Component{
         {
           large
         }
+        bannerImage
         externalLinks
         {
           url
@@ -326,7 +325,8 @@ class GenreSelect extends React.Component{
       description: (data.data.Page.media[randNum].description == null) ? "No description provided" : data.data.Page.media[randNum].description,
       imgUrl: data.data.Page.media[randNum].coverImage.large,
       link: data.data.Page.media[randNum].externalLinks.url,
-      siteName: data.data.Page.media[randNum].externalLinks.site
+      siteName: data.data.Page.media[randNum].externalLinks.site,
+      bannerUrl: data.data.Page.media[randNum]
     };
 
     //console.log(mediaInfo);

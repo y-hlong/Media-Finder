@@ -114,9 +114,18 @@ body {font-family: Arial;}
 	margin: 30px;
 }
 
-.imgContainer {
-	display: inline-block;
-	margin:auto;
+.titleImg{
+	display:inline-block;
+    transition: 1s ease-in-out;
+	margin: 30px;
+	padding: 12px .5%;
+}
+
+.imgContainer{
+	transition: 1s ease-in-out;
+	display:inline-block;
+	text-align:center;
+	width: 99%;
 }
 
 .mediaList {
