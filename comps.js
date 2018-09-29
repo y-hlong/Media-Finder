@@ -6,6 +6,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+import { CSSTransition } from 'react-transition-group';
+
 var DisplayMedia = function (_React$Component) {
   _inherits(DisplayMedia, _React$Component);
 
@@ -25,7 +27,7 @@ var DisplayMedia = function (_React$Component) {
           "div",
           { className: "imgContainer" },
           this.props.displayList.map(function (item, index) {
-            return React.createElement("img", { className: "titleImg", key: item.title + "-" + "outterList", src: item.imgUrl });
+            return React.createElement("img", { classNames: "fade", className: "titleImg", key: item.title + "-" + "outterList", src: item.imgUrl });
           })
         ) : React.createElement(
           "p",
@@ -64,7 +66,6 @@ var GenreSelect = function (_React$Component2) {
       showResult: false,
       genresActive: [],
       maxPage: 0,
-      mediaType: "ANIME",
       displayList: [],
       noResult: false,
       maxResults: 3
@@ -196,7 +197,7 @@ var GenreSelect = function (_React$Component2) {
       //console.log(genreEnable);
 
       //add back $genre_not_in later. Use string add and use prop to check if empty or not, do it for postRandom too
-      var query = "\n    query ($page: Int, $perPage: Int) {\n      Page (page: $page, perPage: $perPage) {\n        pageInfo {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n      media ( type: " + this.state.mediaType + " " + genreEnable + ")  {\n        title \n        {\n          romaji\n        }\n        description\n        genres\n        id\n      }\n    }\n  }\n    ";
+      var query = "\n    query ($page: Int, $perPage: Int) {\n      Page (page: $page, perPage: $perPage) {\n        pageInfo {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n      media ( type: " + this.props.mediaType + " " + genreEnable + ")  {\n        title \n        {\n          romaji\n        }\n        description\n        genres\n        id\n      }\n    }\n  }\n    ";
 
       var variables = {
         genre_in: this.state.genresActive,
@@ -263,7 +264,7 @@ var GenreSelect = function (_React$Component2) {
       var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive);
       if (this.state.genresActive.length == 0) genreEnable = "";
 
-      var query = "\n    query ($page1: Int, $page2: Int, $page3: Int, $perPage: Int) {\n    firstMedia :Page (page: $page1, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.state.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    secondMedia: Page (page: $page2, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.state.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    thirdMedia: Page (page: $page3, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.state.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n  }\n    ";
+      var query = "\n    query ($page1: Int, $page2: Int, $page3: Int, $perPage: Int) {\n    firstMedia :Page (page: $page1, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    secondMedia: Page (page: $page2, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    thirdMedia: Page (page: $page3, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n  }\n    ";
 
       var variables = {
         page1: pages[0],
@@ -296,33 +297,39 @@ var GenreSelect = function (_React$Component2) {
   }, {
     key: "handleRandomData",
     value: function handleRandomData(data) {
-      console.log(data.data.firstMedia);
 
-      var numItemOnPage = data.data.firstMedia.pageInfo.perPage;
-      var randNum = Math.floor(Math.random() * data.data.firstMedia.pageInfo.perPage);
+      var holder = [];
+      for (var key in data.data) {
+        if (data.data.hasOwnProperty(key)) {
+          var val = data.data[key];
 
-      if (data.data.firstMedia.pageInfo.total < data.data.firstMedia.pageInfo.perPage) {
-        randNum = Math.floor(Math.random() * data.data.firstMedia.pageInfo.total);
-      } else if (!data.data.firstMedia.pageInfo.hasNextPage) {
-        var numOnLastPage = data.data.firstMedia.pageInfo.total - data.data.firstMedia.pageInfo.perPage * (data.data.firstMedia.pageInfo.lastPage - 1);
-        randNum = Math.floor(Math.random() * numOnLastPage);
+          var numItemOnPage = val.pageInfo.perPage;
+          var randNum = Math.floor(Math.random() * val.pageInfo.perPage);
+
+          if (val.pageInfo.total < val.pageInfo.perPage) {
+            randNum = Math.floor(Math.random() * val.pageInfo.total);
+          } else if (!val.pageInfo.hasNextPage) {
+            var numOnLastPage = val.pageInfo.total - val.pageInfo.perPage * (data.data.firstMedia.pageInfo.lastPage - 1);
+            randNum = Math.floor(Math.random() * numOnLastPage);
+          }
+
+          //console.log(randNum);
+
+          var mediaInfo = {
+            title: val.media[randNum].title.romaji,
+            description: val.media[randNum].description == null ? "No description provided" : val.media[randNum].description,
+            imgUrl: val.media[randNum].coverImage.large,
+            link: val.media[randNum].externalLinks.url,
+            siteName: val.media[randNum].externalLinks.site,
+            bannerUrl: val.media[randNum]
+          };
+
+          holder = holder.concat(mediaInfo);
+        }
       }
-
-      //console.log(randNum);
-
-      var mediaInfo = {
-        title: data.data.firstMedia.media[randNum].title.romaji,
-        description: data.data.firstMedia.media[randNum].description == null ? "No description provided" : data.data.firstMedia.media[randNum].description,
-        imgUrl: data.data.firstMedia.media[randNum].coverImage.large,
-        link: data.data.firstMedia.media[randNum].externalLinks.url,
-        siteName: data.data.firstMedia.media[randNum].externalLinks.site,
-        bannerUrl: data.data.firstMedia.media[randNum]
-      };
-
-      //console.log(mediaInfo);
-
+      console.log(holder);
       this.setState(function (prevState) {
-        return { displayList: prevState.displayList.concat(mediaInfo) };
+        return { displayList: holder };
       });
     }
   }, {
@@ -395,4 +402,6 @@ var GenreSelect = function (_React$Component2) {
   return GenreSelect;
 }(React.Component);
 
-ReactDOM.render(React.createElement(GenreSelect, { genreArray: ["Action", "Comedy", "Romance", "banana", "oh boy", "nani"] }), document.getElementById("testy"));
+ReactDOM.render(React.createElement(GenreSelect, { mediaType: "ANIME" }), document.getElementById("animeMedia"));
+
+ReactDOM.render(React.createElement(GenreSelect, { mediaType: "MANGA" }), document.getElementById("mangaMedia"));

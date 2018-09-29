@@ -1,3 +1,4 @@
+import { CSSTransition } from 'react-transition-group';
 class DisplayMedia extends React.Component{
   constructor(props){
     super(props);
@@ -11,7 +12,7 @@ class DisplayMedia extends React.Component{
             <div className ="imgContainer">
                 {this.props.displayList.map((item, index) =>
                     
-                      <img className = "titleImg" key={item.title + "-" + "outterList"} src={item.imgUrl}></img>
+                      <img classNames="fade" className = "titleImg" key={item.title + "-" + "outterList"} src={item.imgUrl}></img>
                     
                 )}
          </div> : <p> No results found! </p>}         
@@ -42,7 +43,6 @@ class GenreSelect extends React.Component{
       showResult: false,
       genresActive: [],
       maxPage: 0,
-      mediaType: "ANIME",
       displayList: [],
       noResult: false,
       maxResults: 3
@@ -164,7 +164,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-      media ( type: `+ this.state.mediaType +` `+ genreEnable + `)  {
+      media ( type: `+ this.props.mediaType +` `+ genreEnable + `)  {
         title 
         {
           romaji
@@ -258,7 +258,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.state.mediaType +` `+ genreEnable + ` ) {
+        media (type: `+ this.props.mediaType +` `+ genreEnable + ` ) {
         title 
         {
           romaji
@@ -287,7 +287,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.state.mediaType +` `+ genreEnable + ` ) {
+        media (type: `+ this.props.mediaType +` `+ genreEnable + ` ) {
         title 
         {
           romaji
@@ -316,7 +316,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.state.mediaType +` `+ genreEnable + ` ) {
+        media (type: `+ this.props.mediaType +` `+ genreEnable + ` ) {
         title 
         {
           romaji
@@ -372,39 +372,43 @@ class GenreSelect extends React.Component{
   }
 
   handleRandomData(data){
-    console.log(data.data.firstMedia);
 
+    var holder = [];
+    for (var key in data.data){
+      if (data.data.hasOwnProperty(key))
+      {
+        var val = data.data[key];
+        
 
-    var numItemOnPage = data.data.firstMedia.pageInfo.perPage;
-    var randNum = Math.floor(Math.random()*data.data.firstMedia.pageInfo.perPage);
+        var numItemOnPage = val.pageInfo.perPage;
+        var randNum = Math.floor(Math.random()*val.pageInfo.perPage);
 
-    if(data.data.firstMedia.pageInfo.total < data.data.firstMedia.pageInfo.perPage){
-      randNum = Math.floor(Math.random() * data.data.firstMedia.pageInfo.total);
-    }
-    else if(!data.data.firstMedia.pageInfo.hasNextPage){
-      var numOnLastPage = (data.data.firstMedia.pageInfo.total - data.data.firstMedia.pageInfo.perPage*(data.data.firstMedia.pageInfo.lastPage - 1));
-      randNum = Math.floor(Math.random() * numOnLastPage)
-    }
+        if(val.pageInfo.total < val.pageInfo.perPage){
+          randNum = Math.floor(Math.random() * val.pageInfo.total);
+        }
+        else if(!val.pageInfo.hasNextPage){
+          var numOnLastPage = (val.pageInfo.total - val.pageInfo.perPage*(data.data.firstMedia.pageInfo.lastPage - 1));
+          randNum = Math.floor(Math.random() * numOnLastPage)
+        }
     
     //console.log(randNum);
 
-    var mediaInfo = {
-      title: data.data.firstMedia.media[randNum].title.romaji,
-      description: (data.data.firstMedia.media[randNum].description == null) ? "No description provided" : data.data.firstMedia.media[randNum].description,
-      imgUrl: data.data.firstMedia.media[randNum].coverImage.large,
-      link: data.data.firstMedia.media[randNum].externalLinks.url,
-      siteName: data.data.firstMedia.media[randNum].externalLinks.site,
-      bannerUrl: data.data.firstMedia.media[randNum]
-    };
+        var mediaInfo = {
+          title: val.media[randNum].title.romaji,
+          description: (val.media[randNum].description == null) ? "No description provided" : val.media[randNum].description,
+          imgUrl: val.media[randNum].coverImage.large,
+          link: val.media[randNum].externalLinks.url,
+          siteName: val.media[randNum].externalLinks.site,
+          bannerUrl: val.media[randNum]
+        };
 
-    //console.log(mediaInfo);
-
+        holder = holder.concat(mediaInfo);
+      }
+    }
+    console.log(holder);
     this.setState((prevState) => {
-      return {displayList: prevState.displayList.concat(mediaInfo)};
-    });
-
-  
-
+        return {displayList: holder};
+        });
   }
 
   submit(){
@@ -442,6 +446,11 @@ class GenreSelect extends React.Component{
 }
 
 ReactDOM.render(
-  <GenreSelect genreArray={["Action","Comedy","Romance", "banana", "oh boy", "nani"]}/>,
-  document.getElementById("testy")
+  <GenreSelect mediaType = "ANIME"/>,
+  document.getElementById("animeMedia")
+  );
+
+ReactDOM.render(
+  <GenreSelect mediaType = "MANGA"/>,
+  document.getElementById("mangaMedia")
   );
