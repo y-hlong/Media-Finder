@@ -66,7 +66,8 @@ var GenreSelect = function (_React$Component2) {
       maxPage: 0,
       mediaType: "ANIME",
       displayList: [],
-      noResult: false
+      noResult: false,
+      maxResults: 3
 
     };
     return _this2;
@@ -248,9 +249,11 @@ var GenreSelect = function (_React$Component2) {
       });
 
       //select a random page from a range of 0 to maxPage, and post request to API
+      var randPages = [];
       for (i = 0; i < 3; i++) {
-        this.postRandomPages(Math.floor(Math.random() * this.state.maxPage));
-      }
+        randPages.push(Math.floor(Math.random() * this.state.maxPage));
+      }console.log(randPages);
+      this.postRandomPages(randPages);
     }
   }, {
     key: "postRandomPages",
@@ -260,10 +263,12 @@ var GenreSelect = function (_React$Component2) {
       var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive);
       if (this.state.genresActive.length == 0) genreEnable = "";
 
-      var query = "\n    query ($page: Int, $perPage: Int) {\n      Page (page: $page, perPage: $perPage) {\n        pageInfo{\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.state.mediaType + " " + genreEnable + " ) {\n        title {\n          romaji\n        }\n        coverImage\n        {\n          large\n        }\n        bannerImage\n        externalLinks\n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n  }\n    ";
+      var query = "\n    query ($page1: Int, $page2: Int, $page3: Int, $perPage: Int) {\n    firstMedia :Page (page: $page1, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.state.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    secondMedia: Page (page: $page2, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.state.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    thirdMedia: Page (page: $page3, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.state.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n  }\n    ";
 
       var variables = {
-        page: pages,
+        page1: pages[0],
+        page2: pages[1],
+        page3: pages[2],
         perPage: 50
       };
 
@@ -291,27 +296,27 @@ var GenreSelect = function (_React$Component2) {
   }, {
     key: "handleRandomData",
     value: function handleRandomData(data) {
-      console.log(data);
+      console.log(data.data.firstMedia);
 
-      var numItemOnPage = data.data.Page.pageInfo.perPage;
-      var randNum = Math.floor(Math.random() * data.data.Page.pageInfo.perPage);
+      var numItemOnPage = data.data.firstMedia.pageInfo.perPage;
+      var randNum = Math.floor(Math.random() * data.data.firstMedia.pageInfo.perPage);
 
-      if (data.data.Page.pageInfo.total < data.data.Page.pageInfo.perPage) {
-        randNum = Math.floor(Math.random() * data.data.Page.pageInfo.total);
-      } else if (!data.data.Page.pageInfo.hasNextPage) {
-        var numOnLastPage = data.data.Page.pageInfo.total - data.data.Page.pageInfo.perPage * (data.data.Page.pageInfo.lastPage - 1);
+      if (data.data.firstMedia.pageInfo.total < data.data.firstMedia.pageInfo.perPage) {
+        randNum = Math.floor(Math.random() * data.data.firstMedia.pageInfo.total);
+      } else if (!data.data.firstMedia.pageInfo.hasNextPage) {
+        var numOnLastPage = data.data.firstMedia.pageInfo.total - data.data.firstMedia.pageInfo.perPage * (data.data.firstMedia.pageInfo.lastPage - 1);
         randNum = Math.floor(Math.random() * numOnLastPage);
       }
 
       //console.log(randNum);
 
       var mediaInfo = {
-        title: data.data.Page.media[randNum].title.romaji,
-        description: data.data.Page.media[randNum].description == null ? "No description provided" : data.data.Page.media[randNum].description,
-        imgUrl: data.data.Page.media[randNum].coverImage.large,
-        link: data.data.Page.media[randNum].externalLinks.url,
-        siteName: data.data.Page.media[randNum].externalLinks.site,
-        bannerUrl: data.data.Page.media[randNum]
+        title: data.data.firstMedia.media[randNum].title.romaji,
+        description: data.data.firstMedia.media[randNum].description == null ? "No description provided" : data.data.firstMedia.media[randNum].description,
+        imgUrl: data.data.firstMedia.media[randNum].coverImage.large,
+        link: data.data.firstMedia.media[randNum].externalLinks.url,
+        siteName: data.data.firstMedia.media[randNum].externalLinks.site,
+        bannerUrl: data.data.firstMedia.media[randNum]
       };
 
       //console.log(mediaInfo);
