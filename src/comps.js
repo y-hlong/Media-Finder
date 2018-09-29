@@ -2,26 +2,152 @@ class DisplayMedia extends React.Component{
   constructor(props){
     super(props);
 
+  }
+
+  render(){
+    return (
+      <div>
+          {!this.props.noResult ? 
+            <div>
+                {this.props.displayList.map((item, index) =>
+                <div key={item.title + "-" + "outterList"}> {item.title}
+                    <div className="imgContainer">
+                      <img src={item.imgUrl}></img>
+                      <div key = {item.title + "-" + "innerList"}> {item.description}
+                      </div>
+                    </div>
+                </div>)}
+         </div> : <p> No results found! </p>}         
+      </div>);
+  }
+}
+
+
+
+
+
+class GenreSelect extends React.Component{
+  constructor(props){
+    super(props);
+
+    this.handleDrop = this.handleDrop.bind(this);
+    this.arraytoTable = this.arraytoTable.bind(this);
+    this.handleAddActive = this.handleAddActive.bind(this);
     this.handleData = this.handleData.bind(this);
+    this.handleInitialData = this.handleInitialData.bind(this);
+    this.submit = this.submit.bind(this);
     this.handleRandomData = this.handleRandomData.bind(this);
+    this.postGenres = this.postGenres.bind(this);
 
     this.state = {
-      jsonstr: "Select Genres!",
-      loading: true,
+      genreArray:[],
+      showResult: false,
+      genresActive: [],
       maxPage: 0,
       mediaType: "ANIME",
       displayList: [],
       noResult: false
+
     };
   }
 
+  componentDidMount() {
+    //get genre list on render
+    var query = `
+    query {
+      GenreCollection
+   }
+    `;
 
-  postGenres(genreIn, allGenre){
+    var variables = {
+      genre_in : ["Romance", "Action"]
+    };
+
+    var url = 'https://graphql.anilist.co',
+    options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+        },
+            body: JSON.stringify({
+            query: query,
+            variables: variables
+        })
+    };
+
+    fetch(url, options).then(this.handleResponse)
+                       .then(this.handleInitialData)
+                       .catch(this.handleError);
+  }
+
+  handleResponse(response) {
+        return response.json().then(function (json) {
+        return response.ok ? json : Promise.reject(json);
+    });
+    }
+
+  //get genre array from api beforehand  
+  handleInitialData(data) {
+    console.log(data);
+        this.setState((prevState) => {
+          return {genreArray: data.data.GenreCollection};
+        });
+    }
+
+  //controls drop menu state
+  handleDrop(){
+    this.setState(prevState =>({
+      showDrop: !prevState.showDrop
+    }));
+  }
+
+  //displays genre array to an html table
+  arraytoTable(myArray){
+    var result = "<table class='genretable'><tbody><tr><td class='genrerows'>";
+    for(var i=0; i<myArray.length; i++) {
+        result += "<button class='clickybutton' onclick={this.handleAddActive}>"+myArray[i]+"</button>";
+    }
+    result += "</td></tr></tbody></table>";
+    return result;
+  }
+
+  //handles select/unselect of genre table
+  handleAddActive(e){
+    var i;
+    var toAdd = e.currentTarget.innerText;
+    if (e.currentTarget.classList.contains("active")){
+      (e.currentTarget.className = e.currentTarget.className.replace(" active", ""));
+      for (i = 0; i < this.state.genresActive.length; i++)
+      {
+        if (this.state.genresActive[i] == toAdd){
+          this.setState(prevState => ({
+            genresActive: prevState.genresActive.filter((_, x) => x !== i)
+          }));
+          break;
+        }
+      }
+    }
+    else{
+      (e.currentTarget.className += " active");
+      this.setState(prevState => ({
+        genresActive: prevState.genresActive.concat(toAdd)
+      }));
+    };
+  }
+
+  //posts selected genre to Anilist API
+  postGenres(){
     //console.log("it ran");
-    //console.log(genreIn.length);
-    var genreEnable = ",genre_in: " + JSON.stringify(genreIn) ;
+    //make showResult true once
+    this.setState(prevState => ({
+        showResult: true
+      }));
 
-    if (genreIn.length == 0)
+    console.log(this.state.genresActive);
+    var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive);
+
+    if (this.state.genresActive.length == 0)
     {
       //console.log("it went in");
       genreEnable = "";
@@ -53,7 +179,7 @@ class DisplayMedia extends React.Component{
     `;
 
     var variables = {
-      genre_in: genreIn,
+      genre_in: this.state.genresActive,
       page: 1,
       perPage: 50
     };
@@ -76,12 +202,43 @@ class DisplayMedia extends React.Component{
                        .catch(this.handleError);
   }
     
+  //checks if response has a result, check amount of pages with selected genres
+  handleData(data) {
+    var i;
+  
 
-    postRandomPages(genreIn, pages){
+    this.setState(() => {
+      return {noResult: false};
+      });
+
+    if(data.data.Page.pageInfo.total == 0){
+      this.setState(() => {
+      return {noResult: true};
+    });
+      return;
+    }
+    //var strData = JSON.stringify(data);
+    //console.log(strData);
+    
+    this.setState(() => {
+      return {maxPage: data.data.Page.pageInfo.lastPage};
+    });
+
+    this.setState(() => {
+      return {displayList: []};
+    });
+
+    //select a random page from a range of 0 to maxPage, and post request to API
+    for (i = 0; i < 3; i++)
+      this.postRandomPages(Math.floor(Math.random()*this.state.maxPage));
+    }
+
+
+    postRandomPages(pages){
     //console.log(genreIn);
 
-    var genreEnable = ",genre_in: " + JSON.stringify(genreIn) ;
-    if (genreIn.length == 0)
+    var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive) ;
+    if (this.state.genresActive.length == 0)
       genreEnable = "";
 
     
@@ -140,51 +297,7 @@ class DisplayMedia extends React.Component{
   }
 
 
-
-  handleResponse(response) {
-      return response.json().then(function (json) {
-      return response.ok ? json : Promise.reject(json);
-  });
-  }
-
-  handleData(data) {
-    var i;
-    console.log(data);
-
-    this.setState(() => {
-      return {noResult: false};
-      });
-
-    if(data.data.Page.pageInfo.total == 0){
-      this.setState(() => {
-      return {noResult: true};
-    });
-      return;
-    }
-    //var strData = JSON.stringify(data);
-    //console.log(strData);
-    
-    this.setState(() => {
-      return {maxPage: data.data.Page.pageInfo.lastPage};
-    });
-
-    this.setState(() => {
-      return {displayList: []};
-    });
-
-
-
-    for (i = 0; i < 3; i++)
-      this.postRandomPages(this.props.genreIn, Math.floor(Math.random()*this.state.maxPage));
-
-    /*
-    this.setState(() => {
-      return {loading: false};
-    });
-        //just display it here I guess don't set no states
-    document.getElementById("change").
-    <div><h1> yo dawg </h1></div>;*/
-  }
+  
 
   handleError(error) {
     alert('Error, check console');
@@ -226,147 +339,8 @@ class DisplayMedia extends React.Component{
 
   }
 
-  render(){
-    return (
-      <div>
-        <button id="submitButton" className="clickybutton" onClick={() => {this.postGenres(this.props.genreIn, this.props.allGenre)}}> Submit </button>
-        <h1> {this.props.genreIn} </h1> 
-          {!this.state.noResult ? 
-            <div>
-                {this.state.displayList.map((item, index) =>
-                <li key={item.title + "-" + "outterList"}> {item.title}
-                  <ul>
-                    <div className="imgContainer">
-                      <img src={item.imgUrl}></img>
-                      <li key = {item.title + "-" + "innerList"}> {item.description}
-                      </li>
-                    </div>
-                  </ul>
-                </li>)}
-         </div>:(<p> No results found! </p>)}         
-        
-      </div>
-        
-      );
-  }
-}
-
-
-
-
-
-class GenreSelect extends React.Component{
-  constructor(props){
-    super(props);
-
-    this.handleDrop = this.handleDrop.bind(this);
-    this.arraytoTable = this.arraytoTable.bind(this);
-    this.handleAddActive = this.handleAddActive.bind(this);
-    this.handleData = this.handleData.bind(this);
-    //this.submit = this.submit.bind(this);
-    this.state = {
-      genreArray:[],
-      showResult: false,
-      genresActive: []
-
-    };
-  }
-
-  componentDidMount() {
-    var query = `
-    query {
-      GenreCollection
-   }
-    `;
-
-    var variables = {
-      genre_in : ["Romance", "Action"]
-    };
-
-    var url = 'https://graphql.anilist.co',
-    options = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        },
-            body: JSON.stringify({
-            query: query,
-            variables: variables
-        })
-    };
-
-    fetch(url, options).then(this.handleResponse)
-                       .then(this.handleData)
-                       .catch(this.handleError);
-  }
-
-  handleResponse(response) {
-        return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json);
-    });
-    }
-
-  handleData(data) {
-        this.setState((prevState) => {
-          return {genreArray: data.data.GenreCollection};
-        });
-        /*
-        this.setState((prevState, props) => {
-          return {jsonstr: strData};
-        });
-        this.setState(() => {
-          return {loading: false};
-        });
-        document.getElementById("About").textContent = strData;*/
-    }
-
-  handleError(error) {
-      alert('Error, check console');
-      console.error(error);
-    }
-
-  handleDrop(){
-    this.setState(prevState =>({
-      showDrop: !prevState.showDrop
-    }));
-  }
-
-  arraytoTable(myArray){
-    var result = "<table class='genretable'><tbody><tr><td class='genrerows'>";
-    for(var i=0; i<myArray.length; i++) {
-        result += "<button class='clickybutton' onclick={this.handleAddActive}>"+myArray[i]+"</button>";
-    }
-    result += "</td></tr></tbody></table>";
-    return result;
-  }
-
-  handleAddActive(e){
-    var i;
-    var toAdd = e.currentTarget.innerText;
-    if (e.currentTarget.classList.contains("active")){
-      (e.currentTarget.className = e.currentTarget.className.replace(" active", ""));
-      for (i = 0; i < this.state.genresActive.length; i++)
-      {
-        if (this.state.genresActive[i] == toAdd){
-          //console.log(this.state.genresActive[i]);
-          //console.log(toAdd);
-          this.setState(prevState => ({
-            genresActive: prevState.genresActive.filter((_, x) => x !== i)
-          }));
-          break;
-        }
-      }
-    }
-    else{
-      (e.currentTarget.className += " active");
-      this.setState(prevState => ({
-        genresActive: prevState.genresActive.concat(toAdd)
-      }));
-    };
-  }
-
   submit(){
+    console.log("submitted");
     this.setState(prevState => ({
         showResult: !prevState.showResult
       }));
@@ -389,9 +363,10 @@ class GenreSelect extends React.Component{
               </tr>
               </tbody>
             </table>
-            <h1 id="testyy">{this.state.genresActive}</h1>
+            <h1>{this.state.genresActive}</h1>
           </div>):""}
-          <div><DisplayMedia genreIn={this.state.genresActive} allGenre={this.state.genreArray}/></div>
+          <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(this.state.genresActive, this.state.genreArray);}}> Submit </button>
+          {this.state.showResult ? <DisplayMedia displayList = {this.state.displayList} noResult = {this.state.noResult} allGenre={this.state.genreArray}/>: ""}
       </div>
       
       );
@@ -402,13 +377,3 @@ ReactDOM.render(
   <GenreSelect genreArray={["Action","Comedy","Romance", "banana", "oh boy", "nani"]}/>,
   document.getElementById("testy")
   );
-
-/*
-ReactDOM.render(
-  <DisplayMedia />,
-  document.getElementById("testy2")
-  );*/
-
-/*this.setState((prevState, props) => {
-        genreIn: props.genreIn
-        });*/
