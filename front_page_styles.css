@@ -48,7 +48,7 @@ body {font-family: Arial;}
 	border: 1px solid #ccc;
 	border-top: none;
 	overflow-y: auto;
-	min-height: 80vh;
+	min-height: 90vh;
 }
 
 .clickybutton {
@@ -71,6 +71,7 @@ body {font-family: Arial;}
 }
 
 .dropdowncontent {
+	z-index: 1;
 	animation-name: drop_down;
 	animation-duration: .5s;
 	height: 200px;
@@ -87,12 +88,13 @@ body {font-family: Arial;}
 
 .genretable {
 	table-layout: fixed;
+	
 }
 
 #submitButton{
 	display: inline-block;
 	margin: 3px;
-	z-index: 1;
+	
 }
 
 
@@ -114,6 +116,7 @@ body {font-family: Arial;}
 }
 
 .titleImg{
+	z-index: -1;
 	opacity: .7;
 	display:inline-block;
 	margin: 30px;
@@ -123,6 +126,8 @@ body {font-family: Arial;}
 
 .titleImg.active{
 	opacity: 1;
+	border-color: #FF8000;
+	border-style: solid;
 }
 
 .titleImg:hover {

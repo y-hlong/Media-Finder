@@ -27,8 +27,8 @@ var DisplayMedia = function (_React$Component) {
         var imagesList = document.getElementsByClassName("titleImg " + this.props.mediaType);
 
         var descriptionList = document.getElementsByClassName("titleDesc " + this.props.mediaType);
-        console.log(descriptionList);
-        console.log(imagesList);
+        //console.log(descriptionList);
+        //console.log(imagesList);
         for (i = 0; i < imagesList.length; i++) {
           imagesList[i].className = imagesList[i].className.replace(" active", "");
           descriptionList[i].className = descriptionList[i].className.replace(" active", "");
@@ -43,21 +43,29 @@ var DisplayMedia = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
+      console.log(this.props.displayList);
       return React.createElement(
         "div",
         null,
+        React.createElement(
+          "p",
+          null,
+          " ",
+          this.props.displayList.title,
+          " "
+        ),
         !this.props.noResult ? React.createElement(
           "div",
           { className: "imgSpace" },
           this.props.displayList.map(function (item, index) {
             return React.createElement("img", { className: "titleImg " + _this2.props.mediaType + (index == 1 ? " active" : ""), id: "imgs", onClick: function onClick(e) {
                 return _this2.handleImgClick(e, index);
-              }, key: item.title + "-" + "img", src: item.imgUrl });
+              }, key: item.title + "-" + "img" + index, src: item.imgUrl });
           }),
           this.props.displayList.map(function (item, index) {
             return React.createElement(
               "p",
-              { className: "titleDesc " + _this2.props.mediaType + (index == 1 ? " active" : ""), key: item.title + "-" + "description" },
+              { className: "titleDesc " + _this2.props.mediaType + (index == 1 ? " active" : ""), key: item.title + "-" + "description" + index },
               "  ",
               React.createElement(
                 "b",
@@ -69,7 +77,7 @@ var DisplayMedia = function (_React$Component) {
               " ",
               React.createElement("br", null),
               " ",
-              item.description,
+              item.description.replace("<br>", ""),
               " "
             );
           })
@@ -167,6 +175,7 @@ var GenreSelect = function (_React$Component2) {
   }, {
     key: "handleDrop",
     value: function handleDrop() {
+      //console.log("dropped");
       this.setState(function (prevState) {
         return {
           showDrop: !prevState.showDrop
@@ -341,7 +350,7 @@ var GenreSelect = function (_React$Component2) {
   }, {
     key: "handleRandomData",
     value: function handleRandomData(data) {
-
+      console.log(data);
       var holder = [];
       for (var key in data.data) {
         if (data.data.hasOwnProperty(key)) {
@@ -358,10 +367,11 @@ var GenreSelect = function (_React$Component2) {
           }
 
           //console.log(randNum);
-
+          var tempDesc = null;
+          val.media[randNum].description != null ? tempDesc = val.media[randNum].description.replace(/<br>/g, "\n") : null;
           var mediaInfo = {
             title: val.media[randNum].title.romaji,
-            description: val.media[randNum].description == null ? "No description provided" : val.media[randNum].description,
+            description: tempDesc == null ? "No description provided" : tempDesc,
             imgUrl: val.media[randNum].coverImage.large,
             link: val.media[randNum].externalLinks.url,
             siteName: val.media[randNum].externalLinks.site,
@@ -434,7 +444,9 @@ var GenreSelect = function (_React$Component2) {
         React.createElement(
           "button",
           { id: "submitButton", className: "clickybutton", onClick: function onClick() {
-              _this4.postGenres(_this4.state.genresActive, _this4.state.genreArray);
+              _this4.postGenres(_this4.state.genresActive, _this4.state.genreArray);_this4.setState(function (prevState) {
+                return { showDrop: false };
+              });
             } },
           " Submit "
         ),

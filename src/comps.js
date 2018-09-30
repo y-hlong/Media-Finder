@@ -13,8 +13,8 @@ class DisplayMedia extends React.Component{
       var imagesList = document.getElementsByClassName("titleImg " + this.props.mediaType);
       
       var descriptionList = document.getElementsByClassName("titleDesc " + this.props.mediaType);
-      console.log(descriptionList);
-      console.log(imagesList);
+      //console.log(descriptionList);
+      //console.log(imagesList);
       for (i = 0; i < imagesList.length; i++){
         imagesList[i].className = imagesList[i].className.replace(" active", "");
         descriptionList[i].className = descriptionList[i].className.replace(" active", "");
@@ -28,19 +28,19 @@ class DisplayMedia extends React.Component{
   }
 
   render(){
+    console.log(this.props.displayList)
     return (
       <div>
+          <p> {this.props.displayList.title} </p>
           {!this.props.noResult ? 
             <div className ="imgSpace">
                 {this.props.displayList.map((item, index) =>
-                  <img className = {"titleImg " + this.props.mediaType + ( index == 1 ? " active" : "" ) } id = "imgs" onClick={(e) => this.handleImgClick(e, index)} key={item.title + "-" + "img"} src={item.imgUrl}></img> 
+                  <img className = {"titleImg " + this.props.mediaType + ( index == 1 ? " active" : "" ) } id = "imgs" onClick={(e) => this.handleImgClick(e, index)} key={item.title + "-" + "img" + index} src={item.imgUrl}></img> 
                 )}
                 {this.props.displayList.map((item, index) =>     
-                      <p className = {"titleDesc " + this.props.mediaType + ( index == 1 ? " active" : "" ) } key = {item.title + "-" + "description"}>  <b>{item.title}</b> <br/> <br/> {item.description} </p>   
+                      <p className = {"titleDesc " + this.props.mediaType + ( index == 1 ? " active" : "" ) } key = {item.title + "-" + "description" + index}>  <b>{item.title}</b> <br/> <br/> {item.description.replace("<br>", "")} </p>   
                 )}
          </div> : <p> No results found! </p>}
-
-          
       </div>);
   }
 }
@@ -121,6 +121,7 @@ class GenreSelect extends React.Component{
 
   //controls drop menu state
   handleDrop(){
+    //console.log("dropped");
     this.setState(prevState =>({
       showDrop: !prevState.showDrop
     }));
@@ -397,7 +398,7 @@ class GenreSelect extends React.Component{
   }
 
   handleRandomData(data){
-
+    console.log(data);
     var holder = [];
     for (var key in data.data){
       if (data.data.hasOwnProperty(key))
@@ -413,14 +414,15 @@ class GenreSelect extends React.Component{
         }
         else if(!val.pageInfo.hasNextPage){
           var numOnLastPage = (val.pageInfo.total - val.pageInfo.perPage*(data.data.firstMedia.pageInfo.lastPage - 1));
-          randNum = Math.floor(Math.random() * numOnLastPage)
+          randNum = Math.floor(Math.random() * numOnLastPage);
         }
     
     //console.log(randNum);
-
+        var tempDesc = null;
+        (val.media[randNum].description != null ? tempDesc = val.media[randNum].description.replace(/<br>/g, "\n"):null );
         var mediaInfo = {
           title: val.media[randNum].title.romaji,
-          description: (val.media[randNum].description == null) ? "No description provided" : val.media[randNum].description,
+          description: (tempDesc == null) ? "No description provided" : tempDesc,
           imgUrl: val.media[randNum].coverImage.large,
           link: val.media[randNum].externalLinks.url,
           siteName: val.media[randNum].externalLinks.site,
@@ -462,7 +464,7 @@ class GenreSelect extends React.Component{
             </table>
             <h1>{this.state.genresActive}</h1>
           </div>):""}
-          <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(this.state.genresActive, this.state.genreArray);}}> Submit </button>
+          <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(this.state.genresActive, this.state.genreArray); this.setState(prevState =>({showDrop: false}));}}> Submit </button>
           {this.state.showResult ? <DisplayMedia displayList = {this.state.displayList} noResult = {this.state.noResult} mediaType = {this.props.mediaType}/>: ""}
       </div>
       
