@@ -2,19 +2,45 @@ class DisplayMedia extends React.Component{
   constructor(props){
     super(props);
 
+    this.handleImgClick = this.handleImgClick.bind(this);
+
+  }
+
+  handleImgClick(e, index){
+    if (!e.currentTarget.classList.contains("active"))
+    {
+
+      var imagesList = document.getElementsByClassName("titleImg " + this.props.mediaType);
+      
+      var descriptionList = document.getElementsByClassName("titleDesc " + this.props.mediaType);
+      console.log(descriptionList);
+      console.log(imagesList);
+      for (i = 0; i < imagesList.length; i++){
+        imagesList[i].className = imagesList[i].className.replace(" active", "");
+        descriptionList[i].className = descriptionList[i].className.replace(" active", "");
+      }
+      e.currentTarget.classList.add("active");
+      
+      
+      descriptionList[index].classList.add("active");
+    }
+
   }
 
   render(){
     return (
       <div>
           {!this.props.noResult ? 
-            <div className ="imgContainer">
+            <div className ="imgSpace">
                 {this.props.displayList.map((item, index) =>
-                    
-                      <img className = "titleImg" key={item.title + "-" + "outterList"} src={item.imgUrl}></img>
-                    
+                  <img className = {"titleImg " + this.props.mediaType + ( index == 1 ? " active" : "" ) } id = "imgs" onClick={(e) => this.handleImgClick(e, index)} key={item.title + "-" + "img"} src={item.imgUrl}></img> 
                 )}
-         </div> : <p> No results found! </p>}         
+                {this.props.displayList.map((item, index) =>     
+                      <p className = {"titleDesc " + this.props.mediaType + ( index == 1 ? " active" : "" ) } key = {item.title + "-" + "description"}>  <b>{item.title}</b> <br/> <br/> {item.description} </p>   
+                )}
+         </div> : <p> No results found! </p>}
+
+          
       </div>);
   }
 }
@@ -87,7 +113,7 @@ class GenreSelect extends React.Component{
 
   //get genre array from api beforehand  
   handleInitialData(data) {
-    console.log(data);
+    //console.log(data);
         this.setState((prevState) => {
           return {genreArray: data.data.GenreCollection};
         });
@@ -142,7 +168,7 @@ class GenreSelect extends React.Component{
         showResult: true
       }));
 
-    console.log(this.state.genresActive);
+    //console.log(this.state.genresActive);
     var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive);
 
     if (this.state.genresActive.length == 0)
@@ -231,7 +257,7 @@ class GenreSelect extends React.Component{
     for (i = 0; i < 3; i++)
       randPages.push(Math.floor(Math.random()*this.state.maxPage));
 
-    console.log(randPages);
+    //console.log(randPages);
     this.postRandomPages(randPages);
   }
 
@@ -404,14 +430,14 @@ class GenreSelect extends React.Component{
         holder = holder.concat(mediaInfo);
       }
     }
-    console.log(holder);
+    //console.log(holder);
     this.setState((prevState) => {
         return {displayList: holder};
         });
   }
 
   submit(){
-    console.log("submitted");
+    //console.log("submitted");
     this.setState(prevState => ({
         showResult: !prevState.showResult
       }));
@@ -437,7 +463,7 @@ class GenreSelect extends React.Component{
             <h1>{this.state.genresActive}</h1>
           </div>):""}
           <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(this.state.genresActive, this.state.genreArray);}}> Submit </button>
-          {this.state.showResult ? <DisplayMedia displayList = {this.state.displayList} noResult = {this.state.noResult} allGenre={this.state.genreArray}/>: ""}
+          {this.state.showResult ? <DisplayMedia displayList = {this.state.displayList} noResult = {this.state.noResult} mediaType = {this.props.mediaType}/>: ""}
       </div>
       
       );

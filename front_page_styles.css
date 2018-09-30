@@ -7,8 +7,8 @@ body {font-family: Arial;}
 }
 
 @keyframes crawl_out {
-	from {line-height: 0%; width: 100%;}
-	to {line-height: 100%;}
+	from {display: none;}
+	to {display: block;}
 }
 
 
@@ -114,24 +114,38 @@ body {font-family: Arial;}
 }
 
 .titleImg{
-	animation-name:crawl_out;
-	animation-duration: 20s;
+	opacity: .7;
 	display:inline-block;
 	margin: 30px;
 	padding: 12px .5%;
+	transition: .5s ease;
+}
+
+.titleImg.active{
+	opacity: 1;
 }
 
 .titleImg:hover {
-	opacity: .7;
-    transition: .5s ease;
+	opacity: 1;
+    transition: .5s ease-in-out;
 	
 }
 
-.imgContainer{
+.imgSpace{
 	transition: 1s ease-in-out;
 	display:inline-block;
 	text-align:center;
 	width: 99%;
+}
+
+.titleDesc {
+	display:none;
+}
+
+.titleDesc.active{
+	text-align:center;
+	display:block;
+	overflow: auto;
 }
 
 .mediaList {

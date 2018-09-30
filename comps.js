@@ -12,20 +12,66 @@ var DisplayMedia = function (_React$Component) {
   function DisplayMedia(props) {
     _classCallCheck(this, DisplayMedia);
 
-    return _possibleConstructorReturn(this, (DisplayMedia.__proto__ || Object.getPrototypeOf(DisplayMedia)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (DisplayMedia.__proto__ || Object.getPrototypeOf(DisplayMedia)).call(this, props));
+
+    _this.handleImgClick = _this.handleImgClick.bind(_this);
+
+    return _this;
   }
 
   _createClass(DisplayMedia, [{
+    key: "handleImgClick",
+    value: function handleImgClick(e, index) {
+      if (!e.currentTarget.classList.contains("active")) {
+
+        var imagesList = document.getElementsByClassName("titleImg " + this.props.mediaType);
+
+        var descriptionList = document.getElementsByClassName("titleDesc " + this.props.mediaType);
+        console.log(descriptionList);
+        console.log(imagesList);
+        for (i = 0; i < imagesList.length; i++) {
+          imagesList[i].className = imagesList[i].className.replace(" active", "");
+          descriptionList[i].className = descriptionList[i].className.replace(" active", "");
+        }
+        e.currentTarget.classList.add("active");
+
+        descriptionList[index].classList.add("active");
+      }
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       return React.createElement(
         "div",
         null,
         !this.props.noResult ? React.createElement(
           "div",
-          { className: "imgContainer" },
+          { className: "imgSpace" },
           this.props.displayList.map(function (item, index) {
-            return React.createElement("img", { className: "titleImg", key: item.title + "-" + "outterList", src: item.imgUrl });
+            return React.createElement("img", { className: "titleImg " + _this2.props.mediaType + (index == 1 ? " active" : ""), id: "imgs", onClick: function onClick(e) {
+                return _this2.handleImgClick(e, index);
+              }, key: item.title + "-" + "img", src: item.imgUrl });
+          }),
+          this.props.displayList.map(function (item, index) {
+            return React.createElement(
+              "p",
+              { className: "titleDesc " + _this2.props.mediaType + (index == 1 ? " active" : ""), key: item.title + "-" + "description" },
+              "  ",
+              React.createElement(
+                "b",
+                null,
+                item.title
+              ),
+              " ",
+              React.createElement("br", null),
+              " ",
+              React.createElement("br", null),
+              " ",
+              item.description,
+              " "
+            );
           })
         ) : React.createElement(
           "p",
@@ -48,18 +94,18 @@ var GenreSelect = function (_React$Component2) {
   function GenreSelect(props) {
     _classCallCheck(this, GenreSelect);
 
-    var _this2 = _possibleConstructorReturn(this, (GenreSelect.__proto__ || Object.getPrototypeOf(GenreSelect)).call(this, props));
+    var _this3 = _possibleConstructorReturn(this, (GenreSelect.__proto__ || Object.getPrototypeOf(GenreSelect)).call(this, props));
 
-    _this2.handleDrop = _this2.handleDrop.bind(_this2);
-    _this2.arraytoTable = _this2.arraytoTable.bind(_this2);
-    _this2.handleAddActive = _this2.handleAddActive.bind(_this2);
-    _this2.handleData = _this2.handleData.bind(_this2);
-    _this2.handleInitialData = _this2.handleInitialData.bind(_this2);
-    _this2.submit = _this2.submit.bind(_this2);
-    _this2.handleRandomData = _this2.handleRandomData.bind(_this2);
-    _this2.postGenres = _this2.postGenres.bind(_this2);
+    _this3.handleDrop = _this3.handleDrop.bind(_this3);
+    _this3.arraytoTable = _this3.arraytoTable.bind(_this3);
+    _this3.handleAddActive = _this3.handleAddActive.bind(_this3);
+    _this3.handleData = _this3.handleData.bind(_this3);
+    _this3.handleInitialData = _this3.handleInitialData.bind(_this3);
+    _this3.submit = _this3.submit.bind(_this3);
+    _this3.handleRandomData = _this3.handleRandomData.bind(_this3);
+    _this3.postGenres = _this3.postGenres.bind(_this3);
 
-    _this2.state = {
+    _this3.state = {
       genreArray: [],
       showResult: false,
       genresActive: [],
@@ -69,7 +115,7 @@ var GenreSelect = function (_React$Component2) {
       maxResults: 3
 
     };
-    return _this2;
+    return _this3;
   }
 
   _createClass(GenreSelect, [{
@@ -110,7 +156,7 @@ var GenreSelect = function (_React$Component2) {
   }, {
     key: "handleInitialData",
     value: function handleInitialData(data) {
-      console.log(data);
+      //console.log(data);
       this.setState(function (prevState) {
         return { genreArray: data.data.GenreCollection };
       });
@@ -185,7 +231,7 @@ var GenreSelect = function (_React$Component2) {
         };
       });
 
-      console.log(this.state.genresActive);
+      //console.log(this.state.genresActive);
       var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive);
 
       if (this.state.genresActive.length == 0) {
@@ -251,7 +297,7 @@ var GenreSelect = function (_React$Component2) {
       var randPages = [];
       for (i = 0; i < 3; i++) {
         randPages.push(Math.floor(Math.random() * this.state.maxPage));
-      }console.log(randPages);
+      } //console.log(randPages);
       this.postRandomPages(randPages);
     }
   }, {
@@ -325,7 +371,7 @@ var GenreSelect = function (_React$Component2) {
           holder = holder.concat(mediaInfo);
         }
       }
-      console.log(holder);
+      //console.log(holder);
       this.setState(function (prevState) {
         return { displayList: holder };
       });
@@ -333,7 +379,7 @@ var GenreSelect = function (_React$Component2) {
   }, {
     key: "submit",
     value: function submit() {
-      console.log("submitted");
+      //console.log("submitted");
       this.setState(function (prevState) {
         return {
           showResult: !prevState.showResult
@@ -343,7 +389,7 @@ var GenreSelect = function (_React$Component2) {
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       return React.createElement(
         "div",
@@ -371,7 +417,7 @@ var GenreSelect = function (_React$Component2) {
                   this.state.genreArray.map(function (item, index) {
                     return React.createElement(
                       "button",
-                      { key: item + "-" + index, className: "clickybutton" + (_this3.state.genresActive.includes(item) ? " active" : ""), onClick: _this3.handleAddActive },
+                      { key: item + "-" + index, className: "clickybutton" + (_this4.state.genresActive.includes(item) ? " active" : ""), onClick: _this4.handleAddActive },
                       item
                     );
                   })
@@ -388,11 +434,11 @@ var GenreSelect = function (_React$Component2) {
         React.createElement(
           "button",
           { id: "submitButton", className: "clickybutton", onClick: function onClick() {
-              _this3.postGenres(_this3.state.genresActive, _this3.state.genreArray);
+              _this4.postGenres(_this4.state.genresActive, _this4.state.genreArray);
             } },
           " Submit "
         ),
-        this.state.showResult ? React.createElement(DisplayMedia, { displayList: this.state.displayList, noResult: this.state.noResult, allGenre: this.state.genreArray }) : ""
+        this.state.showResult ? React.createElement(DisplayMedia, { displayList: this.state.displayList, noResult: this.state.noResult, mediaType: this.props.mediaType }) : ""
       );
     }
   }]);
