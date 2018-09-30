@@ -6,114 +6,24 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var DisplayMedia = function (_React$Component) {
-  _inherits(DisplayMedia, _React$Component);
-
-  function DisplayMedia(props) {
-    _classCallCheck(this, DisplayMedia);
-
-    var _this = _possibleConstructorReturn(this, (DisplayMedia.__proto__ || Object.getPrototypeOf(DisplayMedia)).call(this, props));
-
-    _this.handleImgClick = _this.handleImgClick.bind(_this);
-
-    return _this;
-  }
-
-  _createClass(DisplayMedia, [{
-    key: "handleImgClick",
-    value: function handleImgClick(e, index) {
-      if (!e.currentTarget.classList.contains("active")) {
-
-        var imagesList = document.getElementsByClassName("titleImg " + this.props.mediaType);
-
-        var descriptionList = document.getElementsByClassName("titleDesc " + this.props.mediaType);
-        //console.log(descriptionList);
-        //console.log(imagesList);
-        for (i = 0; i < imagesList.length; i++) {
-          imagesList[i].className = imagesList[i].className.replace(" active", "");
-          descriptionList[i].className = descriptionList[i].className.replace(" active", "");
-        }
-        e.currentTarget.classList.add("active");
-
-        descriptionList[index].classList.add("active");
-      }
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this2 = this;
-
-      console.log(this.props.displayList);
-      return React.createElement(
-        "div",
-        null,
-        React.createElement(
-          "p",
-          null,
-          " ",
-          this.props.displayList.title,
-          " "
-        ),
-        !this.props.noResult ? React.createElement(
-          "div",
-          { className: "imgSpace" },
-          this.props.displayList.map(function (item, index) {
-            return React.createElement("img", { className: "titleImg " + _this2.props.mediaType + (index == 1 ? " active" : ""), id: "imgs", onClick: function onClick(e) {
-                return _this2.handleImgClick(e, index);
-              }, key: item.title + "-" + "img" + index, src: item.imgUrl });
-          }),
-          this.props.displayList.map(function (item, index) {
-            return React.createElement(
-              "p",
-              { className: "titleDesc " + _this2.props.mediaType + (index == 1 ? " active" : ""), key: item.title + "-" + "description" + index },
-              "  ",
-              React.createElement(
-                "b",
-                null,
-                item.title
-              ),
-              " ",
-              React.createElement("br", null),
-              " ",
-              React.createElement("br", null),
-              " ",
-              item.description.replace("<br>", ""),
-              " "
-            );
-          })
-        ) : React.createElement(
-          "p",
-          null,
-          " No results found! "
-        )
-      );
-    }
-  }]);
-
-  return DisplayMedia;
-}(React.Component);
-
-/*<div key = {item.title + "-" + "innerList"}> {item.description}
-                      </div>*/
-
-var GenreSelect = function (_React$Component2) {
-  _inherits(GenreSelect, _React$Component2);
+var GenreSelect = function (_React$Component) {
+  _inherits(GenreSelect, _React$Component);
 
   function GenreSelect(props) {
     _classCallCheck(this, GenreSelect);
 
-    var _this3 = _possibleConstructorReturn(this, (GenreSelect.__proto__ || Object.getPrototypeOf(GenreSelect)).call(this, props));
+    var _this = _possibleConstructorReturn(this, (GenreSelect.__proto__ || Object.getPrototypeOf(GenreSelect)).call(this, props));
 
-    _this3.handleDrop = _this3.handleDrop.bind(_this3);
-    _this3.arraytoTable = _this3.arraytoTable.bind(_this3);
-    _this3.handleAddActive = _this3.handleAddActive.bind(_this3);
-    _this3.handleData = _this3.handleData.bind(_this3);
-    _this3.handleInitialData = _this3.handleInitialData.bind(_this3);
-    _this3.submit = _this3.submit.bind(_this3);
-    _this3.handleRandomData = _this3.handleRandomData.bind(_this3);
-    _this3.postGenres = _this3.postGenres.bind(_this3);
+    _this.handleDrop = _this.handleDrop.bind(_this);
+    _this.arraytoTable = _this.arraytoTable.bind(_this);
+    _this.handleAddActive = _this.handleAddActive.bind(_this);
+    _this.handleData = _this.handleData.bind(_this);
+    _this.handleInitialData = _this.handleInitialData.bind(_this);
+    _this.submit = _this.submit.bind(_this);
+    _this.handleRandomData = _this.handleRandomData.bind(_this);
+    _this.postGenres = _this.postGenres.bind(_this);
 
-    _this3.state = {
+    _this.state = {
       genreArray: [],
       showResult: false,
       genresActive: [],
@@ -123,7 +33,7 @@ var GenreSelect = function (_React$Component2) {
       maxResults: 3
 
     };
-    return _this3;
+    return _this;
   }
 
   _createClass(GenreSelect, [{
@@ -399,7 +309,7 @@ var GenreSelect = function (_React$Component2) {
   }, {
     key: "render",
     value: function render() {
-      var _this4 = this;
+      var _this2 = this;
 
       return React.createElement(
         "div",
@@ -427,7 +337,7 @@ var GenreSelect = function (_React$Component2) {
                   this.state.genreArray.map(function (item, index) {
                     return React.createElement(
                       "button",
-                      { key: item + "-" + index, className: "clickybutton" + (_this4.state.genresActive.includes(item) ? " active" : ""), onClick: _this4.handleAddActive },
+                      { key: item + "-" + index, className: "clickybutton" + (_this2.state.genresActive.includes(item) ? " active" : ""), onClick: _this2.handleAddActive },
                       item
                     );
                   })
@@ -444,7 +354,7 @@ var GenreSelect = function (_React$Component2) {
         React.createElement(
           "button",
           { id: "submitButton", className: "clickybutton", onClick: function onClick() {
-              _this4.postGenres(_this4.state.genresActive, _this4.state.genreArray);_this4.setState(function (prevState) {
+              _this2.postGenres(_this2.state.genresActive, _this2.state.genreArray);_this2.setState(function (prevState) {
                 return { showDrop: false };
               });
             } },
