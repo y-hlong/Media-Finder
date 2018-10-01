@@ -306,6 +306,10 @@ var GenreSelect = function (_React$Component) {
         };
       });
     }
+
+    //selected genres manipulates DOM, may migrate to using states instead
+    //create component Genre, map to Genre with props name and on click function from this component that toggle whether something is active. Keep track of active in this, then when mapping check if name is part of active ? active=true : active=false
+
   }, {
     key: "render",
     value: function render() {

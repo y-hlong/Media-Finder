@@ -1,3 +1,4 @@
+
 class GenreSelect extends React.Component{
   constructor(props){
     super(props);
@@ -390,8 +391,11 @@ class GenreSelect extends React.Component{
       }));
   }
 
+  //selected genres manipulates DOM, may migrate to using states instead
+  //create component Genre, map to Genre with props name and on click function from this component that toggle whether something is active. Keep track of active in this, then when mapping check if name is part of active ? active=true : active=false
   render(){
     return(
+
       <div className="mainMenues">
         <button className="clickybutton" onClick={this.handleDrop}> Select Genre </button>
         {this.state.showDrop ? (
@@ -399,11 +403,11 @@ class GenreSelect extends React.Component{
           <table className="genretable">
             <tbody>
               <tr className="genrerows">
-              <td>
-               {this.state.genreArray.map((item, index) =>
-                <button key={item + "-" + index} className={"clickybutton"+(this.state.genresActive.includes(item) ? " active": "") }onClick={this.handleAddActive}>{item}</button> 
-                )}
-              </td>
+                <td>
+                  {this.state.genreArray.map((item, index) =>
+                  <button key={item + "-" + index} className={"clickybutton"+(this.state.genresActive.includes(item) ? " active": "") }onClick={this.handleAddActive}>{item}</button> 
+                  )}
+                </td>
               </tr>
               </tbody>
             </table>
