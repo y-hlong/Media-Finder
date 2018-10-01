@@ -38,6 +38,9 @@ var DisplayMedia = function (_React$Component) {
         descriptionList[index].classList.add("active");
       }
     }
+
+    //Using DOM manipulation. Not ideal, may separate img out into separate components
+
   }, {
     key: "render",
     value: function render() {
@@ -70,7 +73,11 @@ var DisplayMedia = function (_React$Component) {
               React.createElement(
                 "b",
                 null,
-                item.title
+                React.createElement(
+                  "a",
+                  { className: "titleLink", href: item.id != undefined ? encodeURI("https://anilist.co/anime/" + item.id + "/" + item.title) : encodeURI("https://anilist.co/search/anime?sort=SEARCH_MATCH&search=" + item.title), target: "_blank" },
+                  item.title
+                )
               ),
               " ",
               React.createElement("br", null),

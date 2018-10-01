@@ -27,6 +27,7 @@ class DisplayMedia extends React.Component{
 
   }
 
+  //Using DOM manipulation. Not ideal, may separate img out into separate components
   render(){
     console.log(this.props.displayList)
     return (
@@ -36,9 +37,10 @@ class DisplayMedia extends React.Component{
             <div className ="imgSpace">
                 {this.props.displayList.map((item, index) =>
                   <img className = {"titleImg " + this.props.mediaType + ( index == 1 ? " active" : "" ) } id = "imgs" onClick={(e) => this.handleImgClick(e, index)} key={item.title + "-" + "img" + index} src={item.imgUrl}></img> 
+                  
                 )}
                 {this.props.displayList.map((item, index) =>     
-                      <p className = {"titleDesc " + this.props.mediaType + ( index == 1 ? " active" : "" ) } key = {item.title + "-" + "description" + index}>  <b>{item.title}</b> <br/> <br/> {item.description.replace("<br>", "")} </p>   
+                      <p className = {"titleDesc " + this.props.mediaType + ( index == 1 ? " active" : "" ) } key = {item.title + "-" + "description" + index}>  <b>{<a className = "titleLink" href = {item.id != undefined ? encodeURI("https://anilist.co/anime/" + item.id + "/" + item.title) : encodeURI("https://anilist.co/search/anime?sort=SEARCH_MATCH&search=" + item.title)} target = "_blank">{item.title}</a>}</b> <br/> <br/> {item.description.replace("<br>", "")} </p>   
                 )}
          </div> : <p> No results found! </p>}
       </div>);

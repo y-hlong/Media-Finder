@@ -262,6 +262,7 @@ class GenreSelect extends React.Component{
           perPage
         }
         media (type: `+ this.props.mediaType +` `+ genreEnable + ` ) {
+        id
         title 
         {
           romaji
@@ -291,6 +292,7 @@ class GenreSelect extends React.Component{
           perPage
         }
         media (type: `+ this.props.mediaType +` `+ genreEnable + ` ) {
+        id
         title 
         {
           romaji
@@ -300,11 +302,6 @@ class GenreSelect extends React.Component{
           large
         }
         bannerImage
-        externalLinks 
-        {
-          url
-          site
-        }
         description
         genres
       }
@@ -372,14 +369,14 @@ class GenreSelect extends React.Component{
           title: val.media[randNum].title.romaji,
           description: (tempDesc == null) ? "No description provided" : tempDesc,
           imgUrl: val.media[randNum].coverImage.large,
-          link: val.media[randNum].externalLinks.url,
-          siteName: val.media[randNum].externalLinks.site,
-          bannerUrl: val.media[randNum]
+          bannerUrl: val.media[randNum],
+          id: val.media[randNum].id
         };
 
         holder = holder.concat(mediaInfo);
       }
     }
+
     //console.log(holder);
     this.setState((prevState) => {
         return {displayList: holder};

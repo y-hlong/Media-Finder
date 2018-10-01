@@ -44,6 +44,7 @@ body {font-family: Arial;}
 .tabcontent {
 	position: relative;
 	transition: opacity 1s ease-in-out;
+	transition: height 1s ease;
 	padding: 6px 12px;
 	border: 1px solid #ccc;
 	border-top: none;
@@ -135,6 +136,16 @@ body {font-family: Arial;}
     transition: .5s ease-in-out;
 	
 }
+
+.titleLink{
+	border-style: solid;
+	color: #FF8000;
+	text-decoration:none
+	border-radius: 5px;
+	background-color: #eee;
+	padding: 5px 5px;
+}
+
 
 .imgSpace{
 	transition: 1s ease-in-out;
