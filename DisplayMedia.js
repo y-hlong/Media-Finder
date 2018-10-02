@@ -59,35 +59,50 @@ var DisplayMedia = function (_React$Component) {
         ),
         !this.props.noResult ? React.createElement(
           "div",
-          { className: "imgSpace" },
-          this.props.displayList.map(function (item, index) {
-            return React.createElement("img", { className: "titleImg " + _this2.props.mediaType + (index == 1 ? " active" : ""), id: "imgs", onClick: function onClick(e) {
-                return _this2.handleImgClick(e, index);
-              }, key: item.title + "-" + "img" + index, src: item.imgUrl });
-          }),
-          this.props.displayList.map(function (item, index) {
-            return React.createElement(
-              "p",
-              { className: "titleDesc " + _this2.props.mediaType + (index == 1 ? " active" : ""), key: item.title + "-" + "description" + index },
-              "  ",
-              React.createElement(
-                "b",
-                null,
+          null,
+          this.props.displayList.length == 0 ? React.createElement(
+            "p",
+            null,
+            "Loading"
+          ) : "",
+          React.createElement(
+            "div",
+            { className: "imgSpace" },
+            this.props.displayList.map(function (item, index) {
+              return React.createElement("img", { className: "titleImg " + _this2.props.mediaType + (index == 1 ? " active selected" : ""), id: "imgs", onClick: function onClick(e) {
+                  return _this2.handleImgClick(e, index);
+                }, key: item.title + "-" + "img" + index, src: item.imgUrl });
+            })
+          ),
+          React.createElement(
+            "div",
+            { className: "textSpace" },
+            this.props.displayList.map(function (item, index) {
+              return React.createElement(
+                "p",
+                { className: "titleDesc " + _this2.props.mediaType + (index == 1 ? " active" : ""), key: item.title + "-" + "description" + index },
+                "  ",
                 React.createElement(
-                  "a",
-                  { className: "titleLink", href: item.id != undefined ? encodeURI("https://anilist.co/anime/" + item.id + "/" + item.title) : encodeURI("https://anilist.co/search/anime?sort=SEARCH_MATCH&search=" + item.title), target: "_blank" },
-                  item.title
-                )
-              ),
-              " ",
-              React.createElement("br", null),
-              " ",
-              React.createElement("br", null),
-              " ",
-              item.description.replace("<br>", ""),
-              " "
-            );
-          })
+                  "b",
+                  null,
+                  React.createElement(
+                    "a",
+                    { className: "titleLink", href: item.id != undefined ? encodeURI("https://anilist.co/" + _this2.props.mediaType + "/" + item.id + "/" + item.title) : encodeURI("https://anilist.co/search/anime?sort=SEARCH_MATCH&search=" + item.title), target: "_blank" },
+                    " ",
+                    item.title,
+                    " "
+                  )
+                ),
+                " ",
+                React.createElement("br", null),
+                " ",
+                React.createElement("br", null),
+                " ",
+                item.description.replace("<br>", ""),
+                " "
+              );
+            })
+          )
         ) : React.createElement(
           "p",
           null,

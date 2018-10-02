@@ -14,9 +14,11 @@ var GenreSelect = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (GenreSelect.__proto__ || Object.getPrototypeOf(GenreSelect)).call(this, props));
 
-    _this.handleDrop = _this.handleDrop.bind(_this);
+    _this.handleDropInc = _this.handleDropInc.bind(_this);
+    _this.handleDropExc = _this.handleDropExc.bind(_this);
     _this.arraytoTable = _this.arraytoTable.bind(_this);
-    _this.handleAddActive = _this.handleAddActive.bind(_this);
+    _this.handleAddActiveInc = _this.handleAddActiveInc.bind(_this);
+    _this.handleAddActiveExc = _this.handleAddActiveExc.bind(_this);
     _this.handleData = _this.handleData.bind(_this);
     _this.handleInitialData = _this.handleInitialData.bind(_this);
     _this.submit = _this.submit.bind(_this);
@@ -26,7 +28,8 @@ var GenreSelect = function (_React$Component) {
     _this.state = {
       genreArray: [],
       showResult: false,
-      genresActive: [],
+      genresActiveInc: [],
+      genresActiveExc: [],
       maxPage: 0,
       displayList: [],
       noResult: false,
@@ -80,15 +83,30 @@ var GenreSelect = function (_React$Component) {
       });
     }
 
-    //controls drop menu state
+    //controls drop menu state of include menu
 
   }, {
-    key: "handleDrop",
-    value: function handleDrop() {
+    key: "handleDropInc",
+    value: function handleDropInc() {
       //console.log("dropped");
       this.setState(function (prevState) {
         return {
-          showDrop: !prevState.showDrop
+          showDropInc: !prevState.showDropInc,
+          showDropExc: false
+        };
+      });
+    }
+
+    //controls drop menu state of exclude menu
+
+  }, {
+    key: "handleDropExc",
+    value: function handleDropExc() {
+      //console.log("dropped");
+      this.setState(function (prevState) {
+        return {
+          showDropExc: !prevState.showDropExc,
+          showDropInc: false
         };
       });
     }
@@ -106,20 +124,19 @@ var GenreSelect = function (_React$Component) {
       return result;
     }
 
-    //handles select/unselect of genre table
+    //handles select/deselect of include genre table 
 
   }, {
-    key: "handleAddActive",
-    value: function handleAddActive(e) {
+    key: "handleAddActiveInc",
+    value: function handleAddActiveInc(e) {
       var i;
       var toAdd = e.currentTarget.innerText;
       if (e.currentTarget.classList.contains("active")) {
-        e.currentTarget.className = e.currentTarget.className.replace(" active", "");
-        for (i = 0; i < this.state.genresActive.length; i++) {
-          if (this.state.genresActive[i] == toAdd) {
+        for (i = 0; i < this.state.genresActiveInc.length; i++) {
+          if (this.state.genresActiveInc[i] == toAdd) {
             this.setState(function (prevState) {
               return {
-                genresActive: prevState.genresActive.filter(function (_, x) {
+                genresActiveInc: prevState.genresActiveInc.filter(function (_, x) {
                   return x !== i;
                 })
               };
@@ -128,10 +145,62 @@ var GenreSelect = function (_React$Component) {
           }
         }
       } else {
-        e.currentTarget.className += " active";
+        for (i = 0; i < this.state.genresActiveExc.length; i++) {
+          if (this.state.genresActiveExc[i] == toAdd) {
+            this.setState(function (prevState) {
+              return {
+                genresActiveExc: prevState.genresActiveExc.filter(function (_, x) {
+                  return x !== i;
+                })
+              };
+            });
+            break;
+          }
+        }
         this.setState(function (prevState) {
           return {
-            genresActive: prevState.genresActive.concat(toAdd)
+            genresActiveInc: prevState.genresActiveInc.concat(toAdd)
+          };
+        });
+      };
+    }
+
+    //handle exclude table
+
+  }, {
+    key: "handleAddActiveExc",
+    value: function handleAddActiveExc(e) {
+      var i;
+      var toAdd = e.currentTarget.innerText;
+      if (e.currentTarget.classList.contains("active")) {
+        for (i = 0; i < this.state.genresActiveExc.length; i++) {
+          if (this.state.genresActiveExc[i] == toAdd) {
+            this.setState(function (prevState) {
+              return {
+                genresActiveExc: prevState.genresActiveExc.filter(function (_, x) {
+                  return x !== i;
+                })
+              };
+            });
+            break;
+          }
+        }
+      } else {
+        for (i = 0; i < this.state.genresActiveInc.length; i++) {
+          if (this.state.genresActiveInc[i] == toAdd) {
+            this.setState(function (prevState) {
+              return {
+                genresActiveInc: prevState.genresActiveInc.filter(function (_, x) {
+                  return x !== i;
+                })
+              };
+            });
+            break;
+          }
+        }
+        this.setState(function (prevState) {
+          return {
+            genresActiveExc: prevState.genresActiveExc.concat(toAdd)
           };
         });
       };
@@ -150,20 +219,15 @@ var GenreSelect = function (_React$Component) {
         };
       });
 
-      //console.log(this.state.genresActive);
-      var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive);
+      //checks if include and/or exclude is empty
+      if (this.state.genresActiveInc.length == 0) genreInclude = "";else var genreInclude = ",genre_in: " + JSON.stringify(this.state.genresActiveInc);
 
-      if (this.state.genresActive.length == 0) {
-        //console.log("it went in");
-        genreEnable = "";
-      }
-      //console.log(genreEnable);
+      if (this.state.genresActiveExc.length == 0) genreExclude = "";else var genreExclude = ",genre_not_in: " + JSON.stringify(this.state.genresActiveExc);
 
       //add back $genre_not_in later. Use string add and use prop to check if empty or not, do it for postRandom too
-      var query = "\n    query ($page: Int, $perPage: Int) {\n      Page (page: $page, perPage: $perPage) {\n        pageInfo {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n      media ( type: " + this.props.mediaType + " " + genreEnable + ")  {\n        title \n        {\n          romaji\n        }\n        description\n        genres\n        id\n      }\n    }\n  }\n    ";
+      var query = "\n    query ($page: Int, $perPage: Int) {\n      Page (page: $page, perPage: $perPage) {\n        pageInfo {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n      media ( type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + ")  {\n        title \n        {\n          romaji\n        }\n        description\n        genres\n        id\n      }\n    }\n  }\n    ";
 
       var variables = {
-        genre_in: this.state.genresActive,
         page: 1,
         perPage: 50
       };
@@ -224,10 +288,11 @@ var GenreSelect = function (_React$Component) {
     value: function postRandomPages(pages) {
       //console.log(genreIn);
 
-      var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive);
-      if (this.state.genresActive.length == 0) genreEnable = "";
+      if (this.state.genresActiveInc.length == 0) genreInclude = "";else var genreInclude = ",genre_in: " + JSON.stringify(this.state.genresActiveInc);
 
-      var query = "\n    query ($page1: Int, $page2: Int, $page3: Int, $perPage: Int) {\n    firstMedia :Page (page: $page1, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreEnable + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    secondMedia: Page (page: $page2, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreEnable + " ) {\n        id\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    thirdMedia: Page (page: $page3, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreEnable + " ) {\n        id\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        description\n        genres\n      }\n    }\n  }\n    ";
+      if (this.state.genresActiveExc.length == 0) genreExclude = "";else var genreExclude = ",genre_not_in: " + JSON.stringify(this.state.genresActiveExc);
+
+      var query = "\n    query ($page1: Int, $page2: Int, $page3: Int, $perPage: Int) {\n    firstMedia :Page (page: $page1, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    secondMedia: Page (page: $page2, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + " ) {\n        id\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        externalLinks \n        {\n          url\n          site\n        }\n        description\n        genres\n      }\n    }\n\n    thirdMedia: Page (page: $page3, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + "  ) {\n        id\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        bannerImage\n        description\n        genres\n      }\n    }\n  }\n    ";
 
       var variables = {
         page1: pages[0],
@@ -278,7 +343,9 @@ var GenreSelect = function (_React$Component) {
 
           //console.log(randNum);
           var tempDesc = null;
+
           val.media[randNum].description != null ? tempDesc = val.media[randNum].description.replace(/<br>/g, "\n") : null;
+
           var mediaInfo = {
             title: val.media[randNum].title.romaji,
             description: tempDesc == null ? "No description provided" : tempDesc,
@@ -318,43 +385,8 @@ var GenreSelect = function (_React$Component) {
       return React.createElement(
         "div",
         { className: "mainMenues" },
-        React.createElement(
-          "button",
-          { className: "clickybutton", onClick: this.handleDrop },
-          " Select Genre "
-        ),
-        this.state.showDrop ? React.createElement(
-          "div",
-          { id: "genredrop", className: "dropdowncontent" },
-          React.createElement(
-            "table",
-            { className: "genretable" },
-            React.createElement(
-              "tbody",
-              null,
-              React.createElement(
-                "tr",
-                { className: "genrerows" },
-                React.createElement(
-                  "td",
-                  null,
-                  this.state.genreArray.map(function (item, index) {
-                    return React.createElement(
-                      "button",
-                      { key: item + "-" + index, className: "clickybutton" + (_this2.state.genresActive.includes(item) ? " active" : ""), onClick: _this2.handleAddActive },
-                      item
-                    );
-                  })
-                )
-              )
-            )
-          ),
-          React.createElement(
-            "h1",
-            null,
-            this.state.genresActive
-          )
-        ) : "",
+        React.createElement(GenreDropDown, { innerText: "Include Genre", genresActive: this.state.genresActiveInc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveInc, handleShowDrop: this.handleDropInc, showDrop: this.state.showDropInc }),
+        React.createElement(GenreDropDown, { innerText: "Exclude Genre", genresActive: this.state.genresActiveExc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveExc, handleShowDrop: this.handleDropExc, showDrop: this.state.showDropExc }),
         React.createElement(
           "button",
           { id: "submitButton", className: "clickybutton", onClick: function onClick() {

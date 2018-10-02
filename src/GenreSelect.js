@@ -1,11 +1,12 @@
-
 class GenreSelect extends React.Component{
   constructor(props){
     super(props);
 
-    this.handleDrop = this.handleDrop.bind(this);
+    this.handleDropInc = this.handleDropInc.bind(this);
+    this.handleDropExc = this.handleDropExc.bind(this);
     this.arraytoTable = this.arraytoTable.bind(this);
-    this.handleAddActive = this.handleAddActive.bind(this);
+    this.handleAddActiveInc = this.handleAddActiveInc.bind(this);
+    this.handleAddActiveExc = this.handleAddActiveExc.bind(this);
     this.handleData = this.handleData.bind(this);
     this.handleInitialData = this.handleInitialData.bind(this);
     this.submit = this.submit.bind(this);
@@ -15,7 +16,8 @@ class GenreSelect extends React.Component{
     this.state = {
       genreArray:[],
       showResult: false,
-      genresActive: [],
+      genresActiveInc: [],
+      genresActiveExc: [],
       maxPage: 0,
       displayList: [],
       noResult: false,
@@ -68,11 +70,21 @@ class GenreSelect extends React.Component{
         });
     }
 
-  //controls drop menu state
-  handleDrop(){
+  //controls drop menu state of include menu
+  handleDropInc(){
     //console.log("dropped");
     this.setState(prevState =>({
-      showDrop: !prevState.showDrop
+      showDropInc: !prevState.showDropInc,
+      showDropExc: false
+    }));
+  }
+
+  //controls drop menu state of exclude menu
+  handleDropExc(){
+    //console.log("dropped");
+    this.setState(prevState =>({
+      showDropExc: !prevState.showDropExc,
+      showDropInc: false
     }));
   }
 
@@ -86,26 +98,65 @@ class GenreSelect extends React.Component{
     return result;
   }
 
-  //handles select/unselect of genre table
-  handleAddActive(e){
+  //handles select/deselect of include genre table 
+  handleAddActiveInc(e){
     var i;
     var toAdd = e.currentTarget.innerText;
     if (e.currentTarget.classList.contains("active")){
-      (e.currentTarget.className = e.currentTarget.className.replace(" active", ""));
-      for (i = 0; i < this.state.genresActive.length; i++)
+      for (i = 0; i < this.state.genresActiveInc.length; i++)
       {
-        if (this.state.genresActive[i] == toAdd){
+        if (this.state.genresActiveInc[i] == toAdd){
           this.setState(prevState => ({
-            genresActive: prevState.genresActive.filter((_, x) => x !== i)
+            genresActiveInc: prevState.genresActiveInc.filter((_, x) => x !== i)
+          }));
+          break;
+        }
+          
+      }
+    }
+    else{
+      for (i = 0; i < this.state.genresActiveExc.length; i++)
+      {
+        if (this.state.genresActiveExc[i] == toAdd){
+            this.setState(prevState => ({
+              genresActiveExc: prevState.genresActiveExc.filter((_, x) => x !== i)
+            }));
+            break;
+          }
+      }
+      this.setState(prevState => ({
+        genresActiveInc: prevState.genresActiveInc.concat(toAdd)
+      }));
+    };
+  }
+
+  //handle exclude table
+  handleAddActiveExc(e){
+    var i;
+    var toAdd = e.currentTarget.innerText;
+    if (e.currentTarget.classList.contains("active")){
+      for (i = 0; i < this.state.genresActiveExc.length; i++)
+      {
+        if (this.state.genresActiveExc[i] == toAdd){
+          this.setState(prevState => ({
+            genresActiveExc: prevState.genresActiveExc.filter((_, x) => x !== i)
           }));
           break;
         }
       }
     }
     else{
-      (e.currentTarget.className += " active");
+      for (i = 0; i < this.state.genresActiveInc.length; i++)
+      {
+        if (this.state.genresActiveInc[i] == toAdd){
+            this.setState(prevState => ({
+              genresActiveInc: prevState.genresActiveInc.filter((_, x) => x !== i)
+            }));
+            break;
+          }
+      }
       this.setState(prevState => ({
-        genresActive: prevState.genresActive.concat(toAdd)
+        genresActiveExc: prevState.genresActiveExc.concat(toAdd)
       }));
     };
   }
@@ -118,15 +169,17 @@ class GenreSelect extends React.Component{
         showResult: true
       }));
 
-    //console.log(this.state.genresActive);
-    var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive);
+    //checks if include and/or exclude is empty
+    if (this.state.genresActiveInc.length == 0)
+      genreInclude = "";
+    else
+      var genreInclude = ",genre_in: " + JSON.stringify(this.state.genresActiveInc);
 
-    if (this.state.genresActive.length == 0)
-    {
-      //console.log("it went in");
-      genreEnable = "";
-    }
-    //console.log(genreEnable);
+    if (this.state.genresActiveExc.length == 0)
+      genreExclude = "";
+    else
+      var genreExclude = ",genre_not_in: " + JSON.stringify(this.state.genresActiveExc);
+    
   
     //add back $genre_not_in later. Use string add and use prop to check if empty or not, do it for postRandom too
     var query = `
@@ -139,7 +192,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-      media ( type: `+ this.props.mediaType +` `+ genreEnable + `)  {
+      media ( type: `+ this.props.mediaType +` `+ genreInclude + ` ` + genreExclude +`)  {
         title 
         {
           romaji
@@ -153,7 +206,6 @@ class GenreSelect extends React.Component{
     `;
 
     var variables = {
-      genre_in: this.state.genresActive,
       page: 1,
       perPage: 50
     };
@@ -216,9 +268,15 @@ class GenreSelect extends React.Component{
     postRandomPages(pages){
     //console.log(genreIn);
 
-    var genreEnable = ",genre_in: " + JSON.stringify(this.state.genresActive) ;
-    if (this.state.genresActive.length == 0)
-      genreEnable = "";
+    if (this.state.genresActiveInc.length == 0)
+      genreInclude = "";
+    else
+      var genreInclude = ",genre_in: " + JSON.stringify(this.state.genresActiveInc);
+
+    if (this.state.genresActiveExc.length == 0)
+      genreExclude = "";
+    else
+      var genreExclude = ",genre_not_in: " + JSON.stringify(this.state.genresActiveExc);
 
     
 
@@ -233,7 +291,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.props.mediaType +` `+ genreEnable + ` ) {
+        media (type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + ` ) {
         title 
         {
           romaji
@@ -262,7 +320,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.props.mediaType +` `+ genreEnable + ` ) {
+        media (type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + ` ) {
         id
         title 
         {
@@ -292,7 +350,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.props.mediaType +` `+ genreEnable + ` ) {
+        media (type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + `  ) {
         id
         title 
         {
@@ -365,7 +423,9 @@ class GenreSelect extends React.Component{
     
     //console.log(randNum);
         var tempDesc = null;
-        (val.media[randNum].description != null ? tempDesc = val.media[randNum].description.replace(/<br>/g, "\n"):null );
+
+        (val.media[randNum].description != null ? tempDesc = val.media[randNum].description.replace(/<br>/g, "\n"): null );
+
         var mediaInfo = {
           title: val.media[randNum].title.romaji,
           description: (tempDesc == null) ? "No description provided" : tempDesc,
@@ -395,24 +455,9 @@ class GenreSelect extends React.Component{
   //create component Genre, map to Genre with props name and on click function from this component that toggle whether something is active. Keep track of active in this, then when mapping check if name is part of active ? active=true : active=false
   render(){
     return(
-
       <div className="mainMenues">
-        <button className="clickybutton" onClick={this.handleDrop}> Select Genre </button>
-        {this.state.showDrop ? (
-          <div id ="genredrop" className="dropdowncontent"> 
-          <table className="genretable">
-            <tbody>
-              <tr className="genrerows">
-                <td>
-                  {this.state.genreArray.map((item, index) =>
-                  <button key={item + "-" + index} className={"clickybutton"+(this.state.genresActive.includes(item) ? " active": "") }onClick={this.handleAddActive}>{item}</button> 
-                  )}
-                </td>
-              </tr>
-              </tbody>
-            </table>
-            <h1>{this.state.genresActive}</h1>
-          </div>):""}
+          <GenreDropDown innerText="Include Genre"  genresActive={this.state.genresActiveInc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveInc} handleShowDrop={this.handleDropInc} showDrop={this.state.showDropInc}/>
+          <GenreDropDown innerText="Exclude Genre"  genresActive={this.state.genresActiveExc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveExc} handleShowDrop={this.handleDropExc} showDrop={this.state.showDropExc}/>
           <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(this.state.genresActive, this.state.genreArray); this.setState(prevState =>({showDrop: false}));}}> Submit </button>
           {this.state.showResult ? <DisplayMedia displayList = {this.state.displayList} noResult = {this.state.noResult} mediaType = {this.props.mediaType}/>: ""}
       </div>

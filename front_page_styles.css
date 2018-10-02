@@ -7,10 +7,25 @@ body {font-family: Arial;}
 }
 
 @keyframes crawl_out {
-	from {display: none;}
-	to {display: block;}
+	from {transform: scaleY(0); transform: scaleX(0)}
+	to {transform: scaleY(1); transform: scaleX(1);}
 }
 
+@keyframes fade_inactive {
+	from {opacity: 0; transform: translate3d(0, -20%, 0);}
+	to {opacity: .7; transform: translate3d(0, 0, 0);}
+}
+
+@keyframes fade_active {
+	from {opacity: 0; transform: translate3d(0, -20%, 0);}
+	to {opacity: 1; transform: translate3d(0, -10%, 0);}
+}
+
+
+.main {
+	padding: 0;
+	margin: 0;
+}
 
 .tab {
 	overflow: hidden;
@@ -49,7 +64,8 @@ body {font-family: Arial;}
 	border: 1px solid #ccc;
 	border-top: none;
 	overflow-y: auto;
-	min-height: 90vh;
+	min-height: 100vh;
+	overflow
 }
 
 .clickybutton {
@@ -69,6 +85,11 @@ body {font-family: Arial;}
 
 .clickybutton.active {
     background-color: #ccc;
+}
+
+.genredropdown {
+	display: inline-block;
+	margin: 3px;
 }
 
 .dropdowncontent {
@@ -109,7 +130,7 @@ body {font-family: Arial;}
 }
 
 .mainmenues {
-	display: table;
+	display: inline-block;
 }
 
 .resultDisplay {
@@ -117,23 +138,35 @@ body {font-family: Arial;}
 }
 
 .titleImg{
+	animation-name: fade_inactive;
+	animation-duration: 2s;
 	z-index: -1;
 	opacity: .7;
 	display:inline-block;
 	margin: 30px;
 	padding: 12px .5%;
-	transition: .5s ease;
+	transition: 1s ease-out;
+	height: 317px;
+	width: 230px;
 }
 
 .titleImg.active{
-	opacity: 1;
 	border-color: #FF8000;
 	border-style: solid;
+	transform: translate3d(0, -10%, 0);
+	transition: 2s;
+	opacity: 1;
 }
+
+.titleImg.selected{
+	animation-name: fade_active;
+	animation-duration: 2s;
+}
+
 
 .titleImg:hover {
 	opacity: 1;
-    transition: .5s ease-in-out;
+    transition: .3s ease-in-out;
 	
 }
 
@@ -142,7 +175,6 @@ body {font-family: Arial;}
 	color: #FF8000;
 	text-decoration:none
 	border-radius: 5px;
-	background-color: #eee;
 	padding: 5px 5px;
 }
 
@@ -152,6 +184,11 @@ body {font-family: Arial;}
 	display:inline-block;
 	text-align:center;
 	width: 99%;
+	height: 450px;
+}
+
+.textSpace{
+	
 }
 
 .titleDesc {
