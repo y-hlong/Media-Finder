@@ -87,6 +87,31 @@ body {font-family: Arial;}
     background-color: #ccc;
 }
 
+.clickybutton {
+    border: none;
+    outline: none;
+	cursor: pointer;
+	background-color: #eee;
+	transition: .5s;
+    padding: 14px 16px;
+}
+
+.includeBtn:hover {
+	background-color: #a0ce9d;
+}
+
+.excludeBtn:hover {
+	background-color: #e88d86;
+}
+
+.includeBtn.active {
+	background-color: #69bf64;
+}
+
+.excludeBtn.active {
+	background-color: #dc5349;
+}
+
 .genredropdown {
 	display: inline-block;
 	margin: 3px;
@@ -107,6 +132,7 @@ body {font-family: Arial;}
     transition: .5s;
    
 }
+
 
 .genretable {
 	table-layout: fixed;

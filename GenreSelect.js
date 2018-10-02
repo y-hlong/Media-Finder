@@ -29,7 +29,7 @@ var GenreSelect = function (_React$Component) {
       genreArray: [],
       showResult: false,
       genresActiveInc: [],
-      genresActiveExc: [],
+      genresActiveExc: ["Hentai"],
       maxPage: 0,
       displayList: [],
       noResult: false,
@@ -385,8 +385,8 @@ var GenreSelect = function (_React$Component) {
       return React.createElement(
         "div",
         { className: "mainMenues" },
-        React.createElement(GenreDropDown, { innerText: "Include Genre", genresActive: this.state.genresActiveInc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveInc, handleShowDrop: this.handleDropInc, showDrop: this.state.showDropInc }),
-        React.createElement(GenreDropDown, { innerText: "Exclude Genre", genresActive: this.state.genresActiveExc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveExc, handleShowDrop: this.handleDropExc, showDrop: this.state.showDropExc }),
+        React.createElement(GenreDropDown, { classType: "includeBtn", innerText: "Include Genre", genresActive: this.state.genresActiveInc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveInc, handleShowDrop: this.handleDropInc, showDrop: this.state.showDropInc }),
+        React.createElement(GenreDropDown, { classType: "excludeBtn", innerText: "Exclude Genre", genresActive: this.state.genresActiveExc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveExc, handleShowDrop: this.handleDropExc, showDrop: this.state.showDropExc }),
         React.createElement(
           "button",
           { id: "submitButton", className: "clickybutton", onClick: function onClick() {

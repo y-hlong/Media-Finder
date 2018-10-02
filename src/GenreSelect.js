@@ -17,7 +17,7 @@ class GenreSelect extends React.Component{
       genreArray:[],
       showResult: false,
       genresActiveInc: [],
-      genresActiveExc: [],
+      genresActiveExc: ["Hentai"],
       maxPage: 0,
       displayList: [],
       noResult: false,
@@ -456,8 +456,8 @@ class GenreSelect extends React.Component{
   render(){
     return(
       <div className="mainMenues">
-          <GenreDropDown innerText="Include Genre"  genresActive={this.state.genresActiveInc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveInc} handleShowDrop={this.handleDropInc} showDrop={this.state.showDropInc}/>
-          <GenreDropDown innerText="Exclude Genre"  genresActive={this.state.genresActiveExc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveExc} handleShowDrop={this.handleDropExc} showDrop={this.state.showDropExc}/>
+          <GenreDropDown classType = "includeBtn" innerText="Include Genre"  genresActive={this.state.genresActiveInc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveInc} handleShowDrop={this.handleDropInc} showDrop={this.state.showDropInc}/>
+          <GenreDropDown classType = "excludeBtn" innerText="Exclude Genre"  genresActive={this.state.genresActiveExc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveExc} handleShowDrop={this.handleDropExc} showDrop={this.state.showDropExc}/>
           <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(this.state.genresActive, this.state.genreArray); this.setState(prevState =>({showDrop: false}));}}> Submit </button>
           {this.state.showResult ? <DisplayMedia displayList = {this.state.displayList} noResult = {this.state.noResult} mediaType = {this.props.mediaType}/>: ""}
       </div>
