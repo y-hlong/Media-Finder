@@ -52,7 +52,9 @@ var GenreDropDown = function (_React$Component) {
                   this.props.genreArray.map(function (item, index) {
                     return React.createElement(
                       "button",
-                      { key: item + "-" + index, className: "clickybutton" + " " + _this2.props.classType + (_this2.props.genresActive.includes(item) ? " active" : ""), onClick: _this2.props.handleAddActive },
+                      { key: item + "-" + index, className: "clickybutton" + " " + _this2.props.classType + (_this2.props.genresActive.includes(item) ? " active" : ""), onClick: function onClick() {
+                          _this2.props.handleAddActive;
+                        } },
                       item
                     );
                   })

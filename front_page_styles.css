@@ -64,7 +64,7 @@ body {font-family: Arial;}
 	border: 1px solid #ccc;
 	border-top: none;
 	overflow-y: auto;
-	min-height: 100vh;
+	min-height: 90vh;
 	overflow
 }
 
@@ -210,11 +210,11 @@ body {font-family: Arial;}
 	display:inline-block;
 	text-align:center;
 	width: 99%;
-	height: 450px;
+	height: 330px;
 }
 
 .textSpace{
-	
+	margin-top: auto;
 }
 
 .titleDesc {
@@ -229,4 +229,12 @@ body {font-family: Arial;}
 
 .mediaList {
 	display: inline-block;
+}
+
+.loadingimg {
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 180px;
+
 }

@@ -29,20 +29,18 @@ class DisplayMedia extends React.Component{
 
   //Using DOM manipulation. Not ideal, may separate img out into separate components
   render(){
-    console.log(this.props.displayList)
     return (
       <div>
           <p> {this.props.displayList.title} </p>
           {!this.props.noResult ? 
             <div>
-            {this.props.displayList.length == 0 ? <p>Loading</p> : ""}
+            {this.props.displayList.length == 0 ? <img className = "loadingimg" src="assets/loading_gif.gif"></img> : ""}
             <div className ="imgSpace">
                 {this.props.displayList.map((item, index) =>
                   <img className = {"titleImg " + this.props.mediaType + ( index == 1 ? " active selected" : "" ) } id = "imgs" onClick={(e) => this.handleImgClick(e, index)} key={item.title + "-" + "img" + index} src={item.imgUrl}></img> 
-                  
                 )}
              </div> 
-                <div className = "textSpace">
+              <div className = "textSpace">
                 {this.props.displayList.map((item, index) =>     
                       <p className = {"titleDesc " + this.props.mediaType + ( index == 1 ? " active" : "" ) } key = {item.title + "-" + "description" + index}>  <b>{<a className = "titleLink" href = {item.id != undefined ? encodeURI("https://anilist.co/" + this.props.mediaType + "/" + item.id + "/" + item.title) : encodeURI("https://anilist.co/search/anime?sort=SEARCH_MATCH&search=" + item.title)} target = "_blank"> {item.title} </a>}</b> <br/> <br/> {item.description.replace("<br>", "")} </p>   
                 )}

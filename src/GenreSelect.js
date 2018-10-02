@@ -300,14 +300,7 @@ class GenreSelect extends React.Component{
         {
           large
         }
-        bannerImage
-        externalLinks 
-        {
-          url
-          site
-        }
         description
-        genres
       }
     }
 
@@ -330,14 +323,7 @@ class GenreSelect extends React.Component{
         {
           large
         }
-        bannerImage
-        externalLinks 
-        {
-          url
-          site
-        }
         description
-        genres
       }
     }
 
@@ -360,9 +346,7 @@ class GenreSelect extends React.Component{
         {
           large
         }
-        bannerImage
         description
-        genres
       }
     }
   }
@@ -446,6 +430,7 @@ class GenreSelect extends React.Component{
 
   submit(){
     //console.log("submitted");
+    window.scrollTo(0,document.body.scrollHeight);
     this.setState(prevState => ({
         showResult: !prevState.showResult
       }));

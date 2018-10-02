@@ -46,7 +46,6 @@ var DisplayMedia = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
-      console.log(this.props.displayList);
       return React.createElement(
         "div",
         null,
@@ -60,11 +59,7 @@ var DisplayMedia = function (_React$Component) {
         !this.props.noResult ? React.createElement(
           "div",
           null,
-          this.props.displayList.length == 0 ? React.createElement(
-            "p",
-            null,
-            "Loading"
-          ) : "",
+          this.props.displayList.length == 0 ? React.createElement("img", { className: "loadingimg", src: "assets/loading_gif.gif" }) : "",
           React.createElement(
             "div",
             { className: "imgSpace" },
