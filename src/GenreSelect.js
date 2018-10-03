@@ -101,6 +101,7 @@ class GenreSelect extends React.Component{
   //handles select/deselect of include genre table 
   handleAddActiveInc(e){
     var i;
+    console.log("including");
     var toAdd = e.currentTarget.innerText;
     if (e.currentTarget.classList.contains("active")){
       for (i = 0; i < this.state.genresActiveInc.length; i++)
@@ -146,6 +147,7 @@ class GenreSelect extends React.Component{
       }
     }
     else{
+      e.currentTarget.className = e.currentTarget.className.replace(" active", "");
       for (i = 0; i < this.state.genresActiveInc.length; i++)
       {
         if (this.state.genresActiveInc[i] == toAdd){
@@ -443,7 +445,7 @@ class GenreSelect extends React.Component{
       <div className="mainMenues">
           <GenreDropDown classType = "includeBtn" innerText="Include Genre"  genresActive={this.state.genresActiveInc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveInc} handleShowDrop={this.handleDropInc} showDrop={this.state.showDropInc}/>
           <GenreDropDown classType = "excludeBtn" innerText="Exclude Genre"  genresActive={this.state.genresActiveExc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveExc} handleShowDrop={this.handleDropExc} showDrop={this.state.showDropExc}/>
-          <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(this.state.genresActive, this.state.genreArray); this.setState(prevState =>({showDrop: false}));}}> Submit </button>
+          <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(); this.setState(prevState =>({showDropInc: false, showDropExc: false}));}}> Submit </button>
           {this.state.showResult ? <DisplayMedia displayList = {this.state.displayList} noResult = {this.state.noResult} mediaType = {this.props.mediaType}/>: ""}
       </div>
       

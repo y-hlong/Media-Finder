@@ -18,7 +18,7 @@ class GenreDropDown extends React.Component{
               <tr className="genrerows">
                 <td>
                   {this.props.genreArray.map((item, index) =>
-                  <button key={item + "-" + index} className={"clickybutton"+ " " + this.props.classType + (this.props.genresActive.includes(item) ? " active": "") } onClick={() => {this.props.handleAddActive}}>{item}</button> 
+                  <button key={item + "-" + index} className={"clickybutton " + this.props.classType + (this.props.genresActive.includes(item) ? " active": "") } onClick={this.props.handleAddActive}>{item}</button> 
                   )}
                 </td>
               </tr>

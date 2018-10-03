@@ -130,6 +130,7 @@ var GenreSelect = function (_React$Component) {
     key: "handleAddActiveInc",
     value: function handleAddActiveInc(e) {
       var i;
+      console.log("including");
       var toAdd = e.currentTarget.innerText;
       if (e.currentTarget.classList.contains("active")) {
         for (i = 0; i < this.state.genresActiveInc.length; i++) {
@@ -186,6 +187,7 @@ var GenreSelect = function (_React$Component) {
           }
         }
       } else {
+        e.currentTarget.className = e.currentTarget.className.replace(" active", "");
         for (i = 0; i < this.state.genresActiveInc.length; i++) {
           if (this.state.genresActiveInc[i] == toAdd) {
             this.setState(function (prevState) {
@@ -391,8 +393,8 @@ var GenreSelect = function (_React$Component) {
         React.createElement(
           "button",
           { id: "submitButton", className: "clickybutton", onClick: function onClick() {
-              _this2.postGenres(_this2.state.genresActive, _this2.state.genreArray);_this2.setState(function (prevState) {
-                return { showDrop: false };
+              _this2.postGenres();_this2.setState(function (prevState) {
+                return { showDropInc: false, showDropExc: false };
               });
             } },
           " Submit "
