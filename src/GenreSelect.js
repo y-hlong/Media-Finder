@@ -12,6 +12,7 @@ class GenreSelect extends React.Component{
     this.submit = this.submit.bind(this);
     this.handleRandomData = this.handleRandomData.bind(this);
     this.postGenres = this.postGenres.bind(this);
+    this.handleMinSliderValue = this.handleMinSliderValue.bind(this);
 
     this.state = {
       genreArray:[],
@@ -21,7 +22,9 @@ class GenreSelect extends React.Component{
       maxPage: 0,
       displayList: [],
       noResult: false,
-      maxResults: 3
+      maxResults: 3,
+      minYear: 1950,
+      maxYear: 2018
 
     };
   }
@@ -101,7 +104,6 @@ class GenreSelect extends React.Component{
   //handles select/deselect of include genre table 
   handleAddActiveInc(e){
     var i;
-    console.log("including");
     var toAdd = e.currentTarget.innerText;
     if (e.currentTarget.classList.contains("active")){
       for (i = 0; i < this.state.genresActiveInc.length; i++)
@@ -164,8 +166,8 @@ class GenreSelect extends React.Component{
   }
 
   //posts selected genre to Anilist API
-  postGenres(){
-    //console.log("it ran");
+  postGenres(tmpMinYear){
+    
     //make showResult true once
     this.setState(prevState => ({
         showResult: true
@@ -194,7 +196,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-      media ( type: `+ this.props.mediaType +` `+ genreInclude + ` ` + genreExclude +`)  {
+      media (startDate_greater: `+ tmpMinYear + `, type: `+ this.props.mediaType +` `+ genreInclude + ` ` + genreExclude +`)  {
         title 
         {
           romaji
@@ -226,14 +228,14 @@ class GenreSelect extends React.Component{
     };
 
     fetch(url, options).then(this.handleResponse)
-                       .then(this.handleData)
+                       .then((data) => {this.handleData(data, tmpMinYear)})
                        .catch(this.handleError);
   }
     
   //checks if response has a result, check amount of pages with selected genres
-  handleData(data) {
+  handleData(data, tmpMinYear) {
+    console.log(tmpMinYear);
     var i;
-  
 
     this.setState(() => {
       return {noResult: false};
@@ -262,12 +264,12 @@ class GenreSelect extends React.Component{
       randPages.push(Math.floor(Math.random()*this.state.maxPage));
 
     //console.log(randPages);
-    this.postRandomPages(randPages);
+    this.postRandomPages(randPages, tmpMinYear);
   }
 
 
 
-    postRandomPages(pages){
+    postRandomPages(pages, minYear){
     //console.log(genreIn);
 
     if (this.state.genresActiveInc.length == 0)
@@ -293,7 +295,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + ` ) {
+        media (startDate_greater: `+ minYear + `, type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + ` ) {
         title 
         {
           romaji
@@ -315,7 +317,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + ` ) {
+        media (startDate_greater: `+ minYear + `, type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + ` ) {
         id
         title 
         {
@@ -338,7 +340,7 @@ class GenreSelect extends React.Component{
           hasNextPage
           perPage
         }
-        media (type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + `  ) {
+        media (startDate_greater: `+ minYear + `, type: `+ this.props.mediaType +` `+ genreInclude + ` `+ genreExclude + `  ) {
         id
         title 
         {
@@ -430,6 +432,12 @@ class GenreSelect extends React.Component{
         });
   }
 
+  handleMinSliderValue (tmpYear){
+    this.setState(prevState => ({
+        minYear: tmpYear
+      }));
+  }
+
   submit(){
     //console.log("submitted");
     window.scrollTo(0,document.body.scrollHeight);
@@ -442,13 +450,23 @@ class GenreSelect extends React.Component{
   //create component Genre, map to Genre with props name and on click function from this component that toggle whether something is active. Keep track of active in this, then when mapping check if name is part of active ? active=true : active=false
   render(){
     return(
+      <div>
+       <form>
+            <p>
+              Minimum Year 
+            </p>
+            <input style={{width:"200px"}} onChange={(e) => {var tmpYear = e.target.value; this.handleMinSliderValue(tmpYear)}} id="minSlide" type="range" name="points" min="1950" max={new Date().getFullYear()}></input>
+            <p style={{display:"inline-block"}}>
+              {this.state.minYear}
+            </p>
+        </form>
       <div className="mainMenues">
           <GenreDropDown classType = "includeBtn" innerText="Include Genre"  genresActive={this.state.genresActiveInc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveInc} handleShowDrop={this.handleDropInc} showDrop={this.state.showDropInc}/>
           <GenreDropDown classType = "excludeBtn" innerText="Exclude Genre"  genresActive={this.state.genresActiveExc} genreArray={this.state.genreArray} handleAddActive={this.handleAddActiveExc} handleShowDrop={this.handleDropExc} showDrop={this.state.showDropExc}/>
-          <button id ="submitButton" className="clickybutton" onClick={() => {this.postGenres(); this.setState(prevState =>({showDropInc: false, showDropExc: false}));}}> Submit </button>
+          <button id ="submitButton" className="clickybutton" onClick={() => {var tmpMinYear = this.state.minYear; this.postGenres(tmpMinYear); this.setState(prevState =>({showDropInc: false, showDropExc: false}));}}> Submit </button>
           {this.state.showResult ? <DisplayMedia displayList = {this.state.displayList} noResult = {this.state.noResult} mediaType = {this.props.mediaType}/>: ""}
       </div>
-      
+      </div>
       );
   }
 }

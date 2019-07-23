@@ -24,6 +24,7 @@ var GenreSelect = function (_React$Component) {
     _this.submit = _this.submit.bind(_this);
     _this.handleRandomData = _this.handleRandomData.bind(_this);
     _this.postGenres = _this.postGenres.bind(_this);
+    _this.handleMinSliderValue = _this.handleMinSliderValue.bind(_this);
 
     _this.state = {
       genreArray: [],
@@ -33,7 +34,9 @@ var GenreSelect = function (_React$Component) {
       maxPage: 0,
       displayList: [],
       noResult: false,
-      maxResults: 3
+      maxResults: 3,
+      minYear: 1950,
+      maxYear: 2018
 
     };
     return _this;
@@ -130,7 +133,6 @@ var GenreSelect = function (_React$Component) {
     key: "handleAddActiveInc",
     value: function handleAddActiveInc(e) {
       var i;
-      console.log("including");
       var toAdd = e.currentTarget.innerText;
       if (e.currentTarget.classList.contains("active")) {
         for (i = 0; i < this.state.genresActiveInc.length; i++) {
@@ -212,8 +214,9 @@ var GenreSelect = function (_React$Component) {
 
   }, {
     key: "postGenres",
-    value: function postGenres() {
-      //console.log("it ran");
+    value: function postGenres(tmpMinYear) {
+      var _this2 = this;
+
       //make showResult true once
       this.setState(function (prevState) {
         return {
@@ -227,7 +230,7 @@ var GenreSelect = function (_React$Component) {
       if (this.state.genresActiveExc.length == 0) genreExclude = "";else var genreExclude = ",genre_not_in: " + JSON.stringify(this.state.genresActiveExc);
 
       //add back $genre_not_in later. Use string add and use prop to check if empty or not, do it for postRandom too
-      var query = "\n    query ($page: Int, $perPage: Int) {\n      Page (page: $page, perPage: $perPage) {\n        pageInfo {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n      media ( type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + ")  {\n        title \n        {\n          romaji\n        }\n        description\n        genres\n        id\n      }\n    }\n  }\n    ";
+      var query = "\n    query ($page: Int, $perPage: Int) {\n      Page (page: $page, perPage: $perPage) {\n        pageInfo {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n      media (startDate_greater: " + tmpMinYear + ", type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + ")  {\n        title \n        {\n          romaji\n        }\n        description\n        genres\n        id\n      }\n    }\n  }\n    ";
 
       var variables = {
         page: 1,
@@ -247,14 +250,17 @@ var GenreSelect = function (_React$Component) {
         })
       };
 
-      fetch(url, options).then(this.handleResponse).then(this.handleData).catch(this.handleError);
+      fetch(url, options).then(this.handleResponse).then(function (data) {
+        _this2.handleData(data, tmpMinYear);
+      }).catch(this.handleError);
     }
 
     //checks if response has a result, check amount of pages with selected genres
 
   }, {
     key: "handleData",
-    value: function handleData(data) {
+    value: function handleData(data, tmpMinYear) {
+      console.log(tmpMinYear);
       var i;
 
       this.setState(function () {
@@ -283,18 +289,18 @@ var GenreSelect = function (_React$Component) {
       for (i = 0; i < 3; i++) {
         randPages.push(Math.floor(Math.random() * this.state.maxPage));
       } //console.log(randPages);
-      this.postRandomPages(randPages);
+      this.postRandomPages(randPages, tmpMinYear);
     }
   }, {
     key: "postRandomPages",
-    value: function postRandomPages(pages) {
+    value: function postRandomPages(pages, minYear) {
       //console.log(genreIn);
 
       if (this.state.genresActiveInc.length == 0) genreInclude = "";else var genreInclude = ",genre_in: " + JSON.stringify(this.state.genresActiveInc);
 
       if (this.state.genresActiveExc.length == 0) genreExclude = "";else var genreExclude = ",genre_not_in: " + JSON.stringify(this.state.genresActiveExc);
 
-      var query = "\n    query ($page1: Int, $page2: Int, $page3: Int, $perPage: Int) {\n    firstMedia :Page (page: $page1, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        description\n      }\n    }\n\n    secondMedia: Page (page: $page2, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + " ) {\n        id\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        description\n      }\n    }\n\n    thirdMedia: Page (page: $page3, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + "  ) {\n        id\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        description\n      }\n    }\n  }\n    ";
+      var query = "\n    query ($page1: Int, $page2: Int, $page3: Int, $perPage: Int) {\n    firstMedia :Page (page: $page1, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (startDate_greater: " + minYear + ", type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + " ) {\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        description\n      }\n    }\n\n    secondMedia: Page (page: $page2, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (startDate_greater: " + minYear + ", type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + " ) {\n        id\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        description\n      }\n    }\n\n    thirdMedia: Page (page: $page3, perPage: $perPage) {\n        pageInfo\n        {\n          total\n          currentPage\n          lastPage\n          hasNextPage\n          perPage\n        }\n        media (startDate_greater: " + minYear + ", type: " + this.props.mediaType + " " + genreInclude + " " + genreExclude + "  ) {\n        id\n        title \n        {\n          romaji\n        }\n        coverImage \n        {\n          large\n        }\n        description\n      }\n    }\n  }\n    ";
 
       var variables = {
         page1: pages[0],
@@ -366,6 +372,15 @@ var GenreSelect = function (_React$Component) {
       });
     }
   }, {
+    key: "handleMinSliderValue",
+    value: function handleMinSliderValue(tmpYear) {
+      this.setState(function (prevState) {
+        return {
+          minYear: tmpYear
+        };
+      });
+    }
+  }, {
     key: "submit",
     value: function submit() {
       //console.log("submitted");
@@ -383,23 +398,44 @@ var GenreSelect = function (_React$Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       return React.createElement(
         "div",
-        { className: "mainMenues" },
-        React.createElement(GenreDropDown, { classType: "includeBtn", innerText: "Include Genre", genresActive: this.state.genresActiveInc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveInc, handleShowDrop: this.handleDropInc, showDrop: this.state.showDropInc }),
-        React.createElement(GenreDropDown, { classType: "excludeBtn", innerText: "Exclude Genre", genresActive: this.state.genresActiveExc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveExc, handleShowDrop: this.handleDropExc, showDrop: this.state.showDropExc }),
+        null,
         React.createElement(
-          "button",
-          { id: "submitButton", className: "clickybutton", onClick: function onClick() {
-              _this2.postGenres();_this2.setState(function (prevState) {
-                return { showDropInc: false, showDropExc: false };
-              });
-            } },
-          " Submit "
+          "form",
+          null,
+          React.createElement(
+            "p",
+            null,
+            "Minimum Year"
+          ),
+          React.createElement("input", { style: { width: "200px" }, onChange: function onChange(e) {
+              var tmpYear = e.target.value;_this3.handleMinSliderValue(tmpYear);
+            }, id: "minSlide", type: "range", name: "points", min: "1950", max: new Date().getFullYear() }),
+          React.createElement(
+            "p",
+            { style: { display: "inline-block" } },
+            this.state.minYear
+          )
         ),
-        this.state.showResult ? React.createElement(DisplayMedia, { displayList: this.state.displayList, noResult: this.state.noResult, mediaType: this.props.mediaType }) : ""
+        React.createElement(
+          "div",
+          { className: "mainMenues" },
+          React.createElement(GenreDropDown, { classType: "includeBtn", innerText: "Include Genre", genresActive: this.state.genresActiveInc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveInc, handleShowDrop: this.handleDropInc, showDrop: this.state.showDropInc }),
+          React.createElement(GenreDropDown, { classType: "excludeBtn", innerText: "Exclude Genre", genresActive: this.state.genresActiveExc, genreArray: this.state.genreArray, handleAddActive: this.handleAddActiveExc, handleShowDrop: this.handleDropExc, showDrop: this.state.showDropExc }),
+          React.createElement(
+            "button",
+            { id: "submitButton", className: "clickybutton", onClick: function onClick() {
+                var tmpMinYear = _this3.state.minYear;_this3.postGenres(tmpMinYear);_this3.setState(function (prevState) {
+                  return { showDropInc: false, showDropExc: false };
+                });
+              } },
+            " Submit "
+          ),
+          this.state.showResult ? React.createElement(DisplayMedia, { displayList: this.state.displayList, noResult: this.state.noResult, mediaType: this.props.mediaType }) : ""
+        )
       );
     }
   }]);
